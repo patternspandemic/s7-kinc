@@ -1,0 +1,230 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1623875721,
+        "narHash": "sha256-A8BU7bjS5GirpAUv4QA+QnJ4CceLHkcXdRp4xITDB0s=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "f7e004a55b120c02ecb6219596820fcd32ca8772",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_2": {
+      "locked": {
+        "lastModified": 1623875721,
+        "narHash": "sha256-A8BU7bjS5GirpAUv4QA+QnJ4CceLHkcXdRp4xITDB0s=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "f7e004a55b120c02ecb6219596820fcd32ca8772",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_3": {
+      "locked": {
+        "lastModified": 1623875721,
+        "narHash": "sha256-A8BU7bjS5GirpAUv4QA+QnJ4CceLHkcXdRp4xITDB0s=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "f7e004a55b120c02ecb6219596820fcd32ca8772",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "kinc-shader-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1625501976,
+        "narHash": "sha256-vZEzEl9kfPxd7l/fr4VverZwtBx7cTzY4CwO/PXoej8=",
+        "owner": "Kinc-Samples",
+        "repo": "Shader-Kinc",
+        "rev": "b911f69083c7ce11db21c575fcd4fc720a19564e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kinc-Samples",
+        "repo": "Shader-Kinc",
+        "type": "github"
+      }
+    },
+    "kinc-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1626905078,
+        "narHash": "sha256-gOvcrNxZxLddrUlwu/iUrrvvYwfBk2BHj890/93sS54=",
+        "owner": "Kode",
+        "repo": "Kinc",
+        "rev": "7475bd06a9d56209a2b9d8c46e201fdb0a38c81e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kode",
+        "repo": "Kinc",
+        "type": "github"
+      }
+    },
+    "kinc-texture-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1624643180,
+        "narHash": "sha256-5hT1dt2aj6BgkDq9t81IOV9zj9jztiFpfKG3FctMiBs=",
+        "owner": "Kinc-Samples",
+        "repo": "Texture-Kinc",
+        "rev": "584a267618f6fdc189e5af485362d2445c240522",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kinc-Samples",
+        "repo": "Texture-Kinc",
+        "type": "github"
+      }
+    },
+    "kode-flk": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "kinc-shader-src": "kinc-shader-src",
+        "kinc-src": "kinc-src",
+        "kinc-texture-src": "kinc-texture-src",
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1626968543,
+        "narHash": "sha256-fkFV93ZHRwmBqmEvxUV+mmS8Mw1EXfq4gbRJq+jcZbQ=",
+        "owner": "patternspandemic",
+        "repo": "kode-flake",
+        "rev": "e61125e8dfd8597a2add57d1b1b76b864ded8618",
+        "type": "github"
+      },
+      "original": {
+        "owner": "patternspandemic",
+        "repo": "kode-flake",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1626834727,
+        "narHash": "sha256-ToGgus+UImnLNaLgv+xfo/cI3J/NQl2KB5kvyErXays=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "63ee5cd99a2e193d5e4c879feb9683ddec23fa03",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-21.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1626834727,
+        "narHash": "sha256-ToGgus+UImnLNaLgv+xfo/cI3J/NQl2KB5kvyErXays=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "63ee5cd99a2e193d5e4c879feb9683ddec23fa03",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-21.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1626834727,
+        "narHash": "sha256-ToGgus+UImnLNaLgv+xfo/cI3J/NQl2KB5kvyErXays=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "63ee5cd99a2e193d5e4c879feb9683ddec23fa03",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-21.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "kode-flk": "kode-flk",
+        "nixpkgs": "nixpkgs_2",
+        "s7-flk": "s7-flk"
+      }
+    },
+    "s7-flk": {
+      "inputs": {
+        "flake-utils": "flake-utils_3",
+        "nixpkgs": "nixpkgs_3",
+        "s7-man": "s7-man",
+        "s7-src": "s7-src"
+      },
+      "locked": {
+        "lastModified": 1628012075,
+        "narHash": "sha256-91eNSAtkDBe0uB8yK5GmKtBe6DPcVdF151Ye5c3yPvY=",
+        "owner": "patternspandemic",
+        "repo": "s7-flake",
+        "rev": "2628172de0633ebcbae5795de0f44cf7c5d8fc9c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "patternspandemic",
+        "repo": "s7-flake",
+        "type": "github"
+      }
+    },
+    "s7-man": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1627497745,
+        "narHash": "sha256-R7q44mMEHxTdM4A9ZyLYK8rstIT22Iyat3AwD+8rU+E=",
+        "owner": "mobileink",
+        "repo": "s7",
+        "rev": "d0bf19114648d48e4b9655ecc8afef68441e0171",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mobileink",
+        "repo": "s7",
+        "type": "github"
+      }
+    },
+    "s7-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1627982961,
+        "narHash": "sha256-o/EngnHwNsNBLoXVC/3mxSzKgn459oi046J4+r6aGYE=",
+        "ref": "master",
+        "rev": "fd23085489978d571e656574bd3adc713a4bf521",
+        "revCount": 295,
+        "type": "git",
+        "url": "https://cm-gitlab.stanford.edu/bil/s7.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://cm-gitlab.stanford.edu/bil/s7.git"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
