@@ -1,5 +1,5 @@
-#ifndef REPL_H_
-#define REPL_H_
+#ifndef S7KINC_REPL_H_
+#define S7KINC_REPL_H_
 
 
 #include <stdlib.h>
@@ -35,4 +35,4 @@ void s7kinc_repl_init(void);
 void s7kinc_repl_cleanup(void);
 
 
-#endif // REPL_H_
+#endif // S7KINC_REPL_H_

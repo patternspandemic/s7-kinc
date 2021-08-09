@@ -2,7 +2,7 @@
 Kinc bindings for s7 Scheme
 ** Compilation
 #+begin_src sh
-gcc -o s7kinc source/main.c source/s7kinc/repl.c source/lib/sds/sds.c -lKinc -ls7
+gcc -o s7kinc source/main.c source/s7kinc/core.c source/s7kinc/repl.c source/lib/sds/sds.c -lKinc -ls7
 #+end_src
 
 #+RESULTS:
