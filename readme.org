@@ -1,8 +1,34 @@
 * s7-kinc
-Kinc bindings for s7 Scheme
-** Compilation
-#+begin_src sh
-gcc -o s7kinc source/main.c source/s7kinc/core.c source/s7kinc/repl.c source/lib/sds/sds.c -lKinc -ls7
-#+end_src
 
-#+RESULTS:
+Here you'll find Kinc bindings for s7 Scheme, as well as an s7 Scheme interpreter embedded into a Kinc application meant for interactive development. It's all a work in progress.
+
+** Some notes
+
+Next up, add to the *load-path*, paths for both s7 bits (cload, etc), as well as the local scheme directory.
+Also setup the *cload-directory* in develop mode.
+
+#+begin_src sh
+❯ ncat localhost 1337
+Welcome to Kinc
+> (set! *load-path* (cons "source/lib/s7/" *load-path*))
+
+("source/lib/s7/" ".")
+> (set! *load-path* (cons "source/scheme/" *load-path*))
+
+("source/scheme/" "source/lib/s7/" ".")
+> *features*
+
+(gcc linux autoload dlopen complex-numbers system-extras overflow-checks ratio s7-9.15 s7)
+> (load "kinc.scm")
+
+#t
+> *features*
+
+(kinc.scm cload.scm gcc linux autoload dlopen complex-numbers system-extras overflow-checks ratio s7-9.15 s7)
+> (require 'kinc/color)
+
+#t
+> KINC_COLOR_RED
+
+4294901760
+#+end_src
