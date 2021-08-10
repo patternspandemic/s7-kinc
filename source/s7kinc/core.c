@@ -14,7 +14,8 @@ void s7kinc_update(void) {}
 void s7kinc_shutdown(void) {}
 
 void s7kinc_init(s7_scheme *sc) {
-  /* TODO: Create various s7 hooks to kinc callbacks
+  /* TODO: load libc, libdl?, cload. (? case, debug, lint, profile, r7rs, reactive, write, etc)
+   * TODO: Create various s7 hooks to kinc callbacks
    * TODO: load kinc scm bits here */
   s7_define_function(sc, "change-color", change_color, 1, 0, false, "(change-color color) change the clear color");
 }

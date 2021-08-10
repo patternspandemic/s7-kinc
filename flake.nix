@@ -1,5 +1,5 @@
 {
-  description = "Kinc bindings for s7 Scheme";
+  description = "Kinc and s7 Scheme bound together.";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-21.05";
@@ -9,10 +9,10 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, s7-flk, kode-flk }:
-    #{
-    #  overlay = import ./overlay.nix { inherit s7-src s7-man; };
-    #}
-    #//
+    {
+      overlay = import ./nix/overlay.nix {};
+    }
+    //
     (
       flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
         let
@@ -23,6 +23,7 @@
               allowUnfree = true;
             };
             overlays = [
+              self.overlay
               s7-flk.overlay
               kode-flk.overlay
             ];
@@ -30,11 +31,14 @@
         in rec
         {
 
-          #packages = flake-utils.lib.flattenTree { s7 = pkgs.s7; };
+          packages = flake-utils.lib.flattenTree { s7kinc = pkgs.s7kinc; };
 
           devShell = pkgs.mkShell {
-            buildInputs = with pkgs; [ s7 kode.libKinc ];
+            buildInputs = with pkgs; [ s7kinc s7 ]; # kode.libKinc
             #inputsFrom = builtins.attrValues self.packages.${system};
+            shellHook = ''
+             echo Welcome to s7-Kinc!
+            '';
           };
 
         }

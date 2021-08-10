@@ -9,8 +9,7 @@
 #include <kinc/log.h>
 #include <kinc/network/socket.h>
 
-#include <s7.h>
-
+#include "../lib/s7/s7.h"
 #include "../lib/sds/sds.h" // Simple Dynamic Strings
 
 

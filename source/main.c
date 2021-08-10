@@ -6,7 +6,7 @@
 #include <kinc/log.h>
 #include <kinc/system.h>
 
-#include <s7.h>
+#include "lib/s7/s7.h"
 
 #include "s7kinc/core.h"
 #include "s7kinc/repl.h"

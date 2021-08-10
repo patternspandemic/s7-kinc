@@ -2,7 +2,7 @@
 #define S7KINC_CORE_H_
 
 
-#include <s7.h>
+#include "../lib/s7/s7.h"
 
 extern uint32_t clear_color;
 
