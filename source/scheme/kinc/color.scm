@@ -2,7 +2,7 @@
 ;;;
 ;;; kinc/color.h
 
-;(require cload.scm)
+(require cload.scm)
 (provide 'kinc/color)
 
 (c-define

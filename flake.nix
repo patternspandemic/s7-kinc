@@ -33,8 +33,9 @@
 
           packages = flake-utils.lib.flattenTree { s7kinc = pkgs.s7kinc; };
 
+          # TODO: Define an emvvar specifying a dev mode, which will end up hiding precompiled .so and adding local paths to load path.
           devShell = pkgs.mkShell {
-            buildInputs = with pkgs; [ s7kinc s7 ]; # kode.libKinc
+            buildInputs = with pkgs; [ s7kinc s7 kode.libKinc ];
             #inputsFrom = builtins.attrValues self.packages.${system};
             shellHook = ''
              echo Welcome to s7-Kinc!

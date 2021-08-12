@@ -2,7 +2,7 @@
 ;;;
 ;;; kinc/window.h
 
-;(require cload.scm)
+(require cload.scm)
 (provide 'kinc/window)
 
 (c-define
