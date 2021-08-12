@@ -1,7 +1,7 @@
-(require cload.scm)
+(require 'cload.scm)
 (provide 'kinc.scm)
 
-(autoload 'kinc/color   "color.scm")
+(autoload 'kinc/color   (lambda (e) (load "kinc_color_s7.so" (inlet 'init_func 'kinc_color_s7_init))))
 (autoload 'kinc/display "display.scm")
 ;;(autoload 'kinc/error   "error.scm")
 ;;(autoload 'kinc/global  "global.scm")

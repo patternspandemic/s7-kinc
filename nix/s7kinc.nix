@@ -22,7 +22,7 @@
 , withImmutableUnquote ? false
 , withMultithreadChecks ? false
 , withPureS7 ? false
-, withSystemExtras ? true # TODO: Remove withSystemExtras option?
+, withSystemExtras ? true # TODO: Remove withSystemExtras option, its required.
 , s7Debugging ? false
 
 # Names of extra .scm files to include from the s7 distribution not already included below:
@@ -87,12 +87,14 @@ in
 #define S7_DEBUGGING ${toDefineVal s7Debugging}
 EOF
 
-      # TODO: Create the s7-kinc main header, or inject into existing core.h?
-      #       This is to set non-dev-mode load paths in the binary
-
+      # Inject load paths into s7kinc's core.h. These are used in non-develop mode.
+      substituteInPlace s7kinc/core.h \
+        --replace "S7_PATH" "S7_PATH \"${builtins.placeholder "out"}/s7kinc/s7\"" \
+        --replace "KINC_PATH" "KINC_PATH \"${builtins.placeholder "out"}/s7kinc/kinc\"" \
+        --replace "SCHEME_PATH" "SCHEME_PATH \"${builtins.placeholder "out"}/s7kinc/scheme\""
 
       # Copy s7 sources into s7-kinc tree where its expected.
-      # TODO: cp only when non-existant and warn otherwise.
+      # TODO: cp only when non-existant and warn otherwise to allow for user override?
       cp ${s7}/s7/s7.{h,c} ./lib/s7/
       cp ${s7}/s7/{${concatStringsSep "," s7SchemeFiles}}.scm ./lib/s7/
 
@@ -108,8 +110,13 @@ EOF
       popd
 
       # Do the same for the s7kinc bindings.
-      # TODO: Precompile kinc bindings. Put these in sepparate load path foldler to make easier to omit when in dev mode?
       pushd scheme/kinc/
+      # TODO: Investigate possible bug. `cload.scm` can't be found even though
+      #       it's in s7i's load-path. Here we get it to work by copying it to
+      #       the working directory.
+      # TODO: Another problem, being that the generated c file include "s7.h"
+      #       instead of <s7.h>, thus the header is also copied.
+      cp  ${s7}/s7/{cload.scm,s7.h} .
       find . -type f -name "*.scm" -exec ${s7}/bin/s7i '{}' \;
       popd
     '';
@@ -122,7 +129,8 @@ EOF
 
       # Precompiled s7 kinc bindings
       pushd scheme/kinc/
-      find . -type f -name "*.so" -print0 | cpio -pdm0 $out/s7kinc/kinc
+      find . -type f -name "kinc_*_s7.*" -print0 | cpio -pdm0 $out/s7kinc/kinc
+#      find . -type f -name "*.so" -print0 | cpio -pdm0 $out/s7kinc/kinc
       popd
 
       pushd scheme/

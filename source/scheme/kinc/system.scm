@@ -2,7 +2,7 @@
 ;;;
 ;;; kinc/system.h
 
-(require cload.scm)
+(require 'cload.scm)
 (provide 'kinc/system)
 
 (c-define

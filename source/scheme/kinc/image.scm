@@ -2,7 +2,7 @@
 ;;;
 ;;; kinc/image.h
 
-(require cload.scm)
+(require 'cload.scm)
 (provide 'kinc/image)
 
 (c-define

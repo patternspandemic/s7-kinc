@@ -2,6 +2,11 @@
 #define S7KINC_CORE_H_
 
 
+/* S7KINC PATHS INJECTED HERE */
+#define S7KINC_S7_PATH
+#define S7KINC_KINC_PATH
+#define S7KINC_SCHEME_PATH
+
 #include "../lib/s7/s7.h"
 
 extern uint32_t clear_color;

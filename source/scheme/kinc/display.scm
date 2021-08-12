@@ -2,7 +2,7 @@
 ;;;
 ;;; kinc/display.h
 
-(require cload.scm)
+(require 'cload.scm)
 (provide 'kinc/display)
 
 (c-define

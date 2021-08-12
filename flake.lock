@@ -179,11 +179,11 @@
         "s7-src": "s7-src"
       },
       "locked": {
-        "lastModified": 1628012075,
-        "narHash": "sha256-91eNSAtkDBe0uB8yK5GmKtBe6DPcVdF151Ye5c3yPvY=",
+        "lastModified": 1628792683,
+        "narHash": "sha256-z/W+MJOaFbFvifs68tcVSCm1sN0c67Jb9kmj8pXsS8M=",
         "owner": "patternspandemic",
         "repo": "s7-flake",
-        "rev": "2628172de0633ebcbae5795de0f44cf7c5d8fc9c",
+        "rev": "3d80798a37b29236ccabd4fcc8d79e65d3945420",
         "type": "github"
       },
       "original": {
@@ -211,11 +211,11 @@
     "s7-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1627982961,
-        "narHash": "sha256-o/EngnHwNsNBLoXVC/3mxSzKgn459oi046J4+r6aGYE=",
+        "lastModified": 1628759807,
+        "narHash": "sha256-Qt9lB4Vw5phPQfozW91n7iUlaxkWBTC9/TTwa012s5Y=",
         "ref": "master",
-        "rev": "fd23085489978d571e656574bd3adc713a4bf521",
-        "revCount": 295,
+        "rev": "f5788cadd7f4f0a351dceae5edb147a44061f898",
+        "revCount": 304,
         "type": "git",
         "url": "https://cm-gitlab.stanford.edu/bil/s7.git"
       },

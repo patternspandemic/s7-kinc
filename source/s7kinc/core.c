@@ -18,4 +18,10 @@ void s7kinc_init(s7_scheme *sc) {
    * TODO: Create various s7 hooks to kinc callbacks
    * TODO: load kinc scm bits here */
   s7_define_function(sc, "change-color", change_color, 1, 0, false, "(change-color color) change the clear color");
+
+  s7_add_to_load_path(sc, S7KINC_S7_PATH);
+  s7_add_to_load_path(sc, S7KINC_KINC_PATH);
+  s7_add_to_load_path(sc, S7KINC_SCHEME_PATH);
+
+  s7_load(sc, "kinc.scm"); // TODO: Abort on failed load..
 }
