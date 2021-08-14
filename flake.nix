@@ -5,6 +5,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-21.05";
     flake-utils.url = "github:numtide/flake-utils";
     s7-flk.url = "github:patternspandemic/s7-flake";
+
+    #local override of s7 source
+    s7-flk.inputs.s7-src = { url = "path:../s7";
+                             flake = false; };
+
     kode-flk.url = "github:patternspandemic/kode-flake";
   };
 
