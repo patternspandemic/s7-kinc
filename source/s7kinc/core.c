@@ -1,6 +1,25 @@
 #include "core.h"
 
 
+/* TODO: Temporary */
+static uint32_t clear_color = KINC_COLOR_KINC;
+
+/* Scheme side hooks to extend Kinc system callbacks. */
+static s7_pointer update_hook;
+static s7_pointer foreground_hook;
+static s7_pointer resume_hook;
+static s7_pointer pause_hook;
+static s7_pointer background_hook;
+static s7_pointer shutdown_hook;
+static s7_pointer drop_files_hook;
+static s7_pointer cut_hook;
+static s7_pointer copy_hook;
+static s7_pointer paste_hook;
+static s7_pointer login_hook;
+static s7_pointer logout_hook;
+
+
+/* TODO: Temporary */
 static s7_pointer change_color(s7_scheme *sc, s7_pointer args) {
   if (s7_is_integer(s7_car(args))) {
     clear_color = s7_integer(s7_car(args));
@@ -9,25 +28,9 @@ static s7_pointer change_color(s7_scheme *sc, s7_pointer args) {
   return(s7_wrong_type_arg_error(sc, "add1", 1, s7_car(args), "an integer"));
 }
 
-static void make_hooks(void) {
-  update_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-update-hook", update_hook);
-  shutdown_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-shutdown-hook", shutdown_hook);
-  /* TODO: Make the other hooks. */
-}
-
-static void set_callbacks(void) {
-  kinc_set_update_callback(s7kinc_update);
-  kinc_set_shutdown_callback(s7kinc_shutdown);
-  /* TODO: Set the other callbacks. */
-}
-
-static void load_scm(s7_scheme *sc, const char *name) {
-  /* kinc_log(KINC_LOG_LEVEL_INFO, "Loading %s", name); */
-  if (!s7_load(sc, name)) {
-    kinc_error_message("Failed to load %s", name);
-  }
+static void s7kinc_core_cleanup(void) {
+  s7kinc_repl_cleanup();
+  free(sc);
 }
 
 static void s7kinc_update(void) {
@@ -50,8 +53,7 @@ static void s7kinc_background(void) {}
 static void s7kinc_shutdown(void) {
   kinc_log(KINC_LOG_LEVEL_INFO, "Shutting down ...");
   s7_call(sc, shutdown_hook, s7_nil(sc));
-  s7kinc_repl_cleanup();
-  free(sc);
+  s7kinc_core_cleanup();
 }
 
 static void s7kinc_drop_files(void) {}
@@ -60,6 +62,27 @@ static void s7kinc_copy(void) {}
 static void s7kinc_paste(void) {}
 static void s7kinc_login(void) {}
 static void s7kinc_logout(void) {}
+
+static void make_hooks(void) {
+  update_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-update-hook", update_hook);
+  shutdown_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-shutdown-hook", shutdown_hook);
+  /* TODO: Make the other hooks. */
+}
+
+static void set_callbacks(void) {
+  kinc_set_update_callback(s7kinc_update);
+  kinc_set_shutdown_callback(s7kinc_shutdown);
+  /* TODO: Set the other callbacks. */
+}
+
+static void load_scm(s7_scheme *sc, const char *name) {
+  /* kinc_log(KINC_LOG_LEVEL_INFO, "Loading %s", name); */
+  if (!s7_load(sc, name)) {
+    kinc_error_message("Failed to load %s", name);
+  }
+}
 
 void s7kinc_init(void) {
   /* Initialize s7 */

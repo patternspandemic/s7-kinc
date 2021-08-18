@@ -1,6 +1,14 @@
 #include "repl.h"
 
 
+static kinc_socket_t server, client; // server and current client sockets
+static unsigned client_addr = 0, client_port = 0; // current client address and port
+static bool client_connected = false; // whether a client is connected
+static const char initial_prompt[] = "Welcome to Kinc\n> "; // initial prompt to send to client
+static sds input_buffer; // a buffer to hold client input until a valid form is received
+static sds wrapped; // a buffer that wraps input_buffer to attempt evaluation
+
+
 static void clear_input_buffer(void) {
   input_buffer[0] = '\0';
   sdsupdatelen(input_buffer);

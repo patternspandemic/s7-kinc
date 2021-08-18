@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include <kinc/system.h>
 
 #include "s7kinc/core.h"
