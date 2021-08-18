@@ -28,12 +28,39 @@ static s7_pointer change_color(s7_scheme *sc, s7_pointer args) {
   return(s7_wrong_type_arg_error(sc, "add1", 1, s7_car(args), "an integer"));
 }
 
-static void s7kinc_core_cleanup(void) {
+static void s7kinc_cleanup(void) {
   s7kinc_repl_cleanup();
   free(sc);
 }
 
-static void s7kinc_update(void) {
+static void make_hooks(void) {
+  update_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-update-hook", update_hook);
+  foreground_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-foreground-hook", foreground_hook);
+  resume_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-resume-hook", resume_hook);
+  pause_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-pause-hook", pause_hook);
+  background_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-background-hook", background_hook);
+  shutdown_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-shutdown-hook", shutdown_hook);
+  drop_files_hook = s7_eval_c_string(sc, "(make-hook 'file)"); // FIXME: file or files?
+  s7_define_constant(sc, "kinc-drop-files-hook", drop_files_hook);
+  cut_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-cut-hook", cut_hook);
+  copy_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-copy-hook", copy_hook);
+  paste_hook = s7_eval_c_string(sc, "(make-hook 'paste)");
+  s7_define_constant(sc, "kinc-paste-hook", paste_hook);
+  login_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-login-hook", login_hook);
+  logout_hook = s7_eval_c_string(sc, "(make-hook)");
+  s7_define_constant(sc, "kinc-logout-hook", logout_hook);
+}
+
+static void s7kinc_update_cb(void) {
   s7kinc_repl_listen(); // TODO: Don't listen every frame..
   s7_call(sc, update_hook, s7_nil(sc));
 
@@ -45,36 +72,53 @@ static void s7kinc_update(void) {
   kinc_g4_swap_buffers();
 }
 
-static void s7kinc_foreground(void) {}
-static void s7kinc_resume(void) {}
-static void s7kinc_pause(void) {}
-static void s7kinc_background(void) {}
+static void s7kinc_foreground_cb(void) { s7_call(sc, foreground_hook, s7_nil(sc)); }
+static void s7kinc_resume_cb(void) { s7_call(sc, resume_hook, s7_nil(sc)); }
+static void s7kinc_pause_cb(void) { s7_call(sc, pause_hook, s7_nil(sc)); }
+static void s7kinc_background_cb(void) { s7_call(sc, background_hook, s7_nil(sc)); }
 
-static void s7kinc_shutdown(void) {
+static void s7kinc_shutdown_cb(void) {
   kinc_log(KINC_LOG_LEVEL_INFO, "Shutting down ...");
   s7_call(sc, shutdown_hook, s7_nil(sc));
-  s7kinc_core_cleanup();
+  s7kinc_cleanup();
 }
 
-static void s7kinc_drop_files(void) {}
-static void s7kinc_cut(void) {}
-static void s7kinc_copy(void) {}
-static void s7kinc_paste(void) {}
-static void s7kinc_login(void) {}
-static void s7kinc_logout(void) {}
-
-static void make_hooks(void) {
-  update_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-update-hook", update_hook);
-  shutdown_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-shutdown-hook", shutdown_hook);
-  /* TODO: Make the other hooks. */
+static void s7kinc_drop_files_cb(wchar_t * file) {
+  kinc_log(KINC_LOG_LEVEL_ERROR, "Drop Files Not Implemented.");
+  // FIXME: file or files? Pass to the called hook
+  //s7_call(sc, drop_files_hook, s7_nil(sc));
 }
+
+static char *s7kinc_cut_cb(void) {
+  s7_pointer cut = s7_call(sc, cut_hook, s7_nil(sc));
+  return (char *)s7_string(cut);
+}
+
+static char *s7kinc_copy_cb(void) {
+  s7_pointer cpy = s7_call(sc, copy_hook, s7_nil(sc));
+  return (char *)s7_string(cpy);
+}
+
+static void s7kinc_paste_cb(char *paste) {
+  s7_call(sc, paste_hook, s7_list(sc, 1, s7_make_string(sc, paste)));
+}
+
+static void s7kinc_login_cb(void) { s7_call(sc, login_hook, s7_nil(sc)); }
+static void s7kinc_logout_cb(void) { s7_call(sc, logout_hook, s7_nil(sc)); }
 
 static void set_callbacks(void) {
-  kinc_set_update_callback(s7kinc_update);
-  kinc_set_shutdown_callback(s7kinc_shutdown);
-  /* TODO: Set the other callbacks. */
+  kinc_set_update_callback(s7kinc_update_cb);
+  kinc_set_foreground_callback(s7kinc_foreground_cb);
+  kinc_set_resume_callback(s7kinc_resume_cb);
+  kinc_set_pause_callback(s7kinc_pause_cb);
+  kinc_set_background_callback(s7kinc_background_cb);
+  kinc_set_shutdown_callback(s7kinc_shutdown_cb);
+  kinc_set_drop_files_callback(s7kinc_drop_files_cb);
+  kinc_set_cut_callback(s7kinc_cut_cb);
+  kinc_set_copy_callback(s7kinc_copy_cb);
+  kinc_set_paste_callback(s7kinc_paste_cb);
+  kinc_set_login_callback(s7kinc_login_cb);
+  kinc_set_logout_callback(s7kinc_logout_cb);
 }
 
 static void load_scm(s7_scheme *sc, const char *name) {

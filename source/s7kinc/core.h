@@ -2,6 +2,8 @@
 #define S7KINC_CORE_H_
 
 
+#include <string.h>
+
 #include <kinc/color.h>
 #include <kinc/error.h>
 #include <kinc/graphics4/graphics.h>
