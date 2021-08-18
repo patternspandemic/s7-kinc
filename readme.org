@@ -1,34 +1,85 @@
 * s7-kinc
 
-Here you'll find Kinc bindings for s7 Scheme, as well as an s7 Scheme interpreter embedded into a Kinc application meant for interactive development. It's all a work in progress.
+Here you'll find [[https://github.com/Kode/Kinc][Kinc]] bindings for [[https://ccrma.stanford.edu/software/s7/][s7 Scheme]], as well as an s7 Scheme interpreter embedded into a Kinc application meant for interactive development.
 
-** Some notes
+** Status
 
-Next up, add to the *load-path*, paths for both s7 bits (cload, etc), as well as the local scheme directory.
-Also setup the *cload-directory* in develop mode.
+Work in Progress, not usable by others.
 
-#+begin_src sh
-❯ ncat localhost 1337
-Welcome to Kinc
-> (set! *load-path* (cons "source/lib/s7/" *load-path*))
+*** Progress of Bindings
 
-("source/lib/s7/" ".")
-> (set! *load-path* (cons "source/scheme/" *load-path*))
-
-("source/scheme/" "source/lib/s7/" ".")
-> *features*
-
-(gcc linux autoload dlopen complex-numbers system-extras overflow-checks ratio s7-9.15 s7)
-> (load "kinc.scm")
-
-#t
-> *features*
-
-(kinc.scm cload.scm gcc linux autoload dlopen complex-numbers system-extras overflow-checks ratio s7-9.15 s7)
-> (require 'kinc/color)
-
-#t
-> KINC_COLOR_RED
-
-4294901760
-#+end_src
+- [-] Kinc
+  + [X] color
+  + [ ] display
+  + [ ] error
+  + [ ] image
+  + [ ] log
+  + [ ] system
+  + [ ] video
+  + [ ] window
+  + [ ] audio1
+    - [ ] audio
+    - [ ] sound
+    - [ ] soundstream
+  + [ ] audio2
+  + [ ] compute
+  + [ ] graphics1
+  + [ ] graphics2
+  + [ ] graphics4
+    - [ ] constantlocation
+    - [ ] graphics
+    - [ ] indexbuffer
+    - [ ] pipeline
+    - [ ] rendertarget
+    - [ ] shader
+    - [ ] texture
+    - [ ] texturearray
+    - [ ] textureunit
+    - [ ] usage
+    - [ ] vertexbuffer
+    - [ ] vertexstructure
+  + [ ] graphics5
+    - [ ] commandlist
+    - [ ] compute
+    - [ ] constantbuffer
+    - [ ] constantlocation
+    - [ ] graphics
+    - [ ] indexbuffer
+    - [ ] pipeline
+    - [ ] raytrace
+    - [ ] rendertarget
+    - [ ] shader
+    - [ ] texture
+    - [ ] textureunit
+    - [ ] vertexbuffer
+    - [ ] vertexstructure
+  + [ ] input
+    - [ ] acceleration
+    - [ ] gamepad
+    - [ ] keyboard
+    - [ ] mouse
+    - [ ] pen
+    - [ ] rotation
+    - [ ] surface
+  + [ ] io
+    - [ ] filereader
+    - [ ] filewriter
+  + [ ] math
+    - [ ] core
+    - [ ] matrix
+    - [ ] quaternion
+    - [ ] random
+    - [ ] vector
+  + [ ] network
+    - [ ] http
+    - [ ] socket
+  + [ ] simd
+  + [ ] threads
+    - [ ] atomic
+    - [ ] event
+    - [ ] fiber
+    - [ ] mutex
+    - [ ] semaphore
+    - [ ] thread
+    - [ ] threadlocal
+  + [ ] vr
