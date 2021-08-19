@@ -33,31 +33,32 @@ static void s7kinc_cleanup(void) {
   free(sc);
 }
 
+/* TODO: Maybe wrap constant names in asterisks? */
 static void make_hooks(void) {
   update_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-update-hook", update_hook);
+  s7_define_constant(sc, "s7kinc-update-hook", update_hook);
   foreground_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-foreground-hook", foreground_hook);
+  s7_define_constant(sc, "s7kinc-foreground-hook", foreground_hook);
   resume_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-resume-hook", resume_hook);
+  s7_define_constant(sc, "s7kinc-resume-hook", resume_hook);
   pause_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-pause-hook", pause_hook);
+  s7_define_constant(sc, "s7kinc-pause-hook", pause_hook);
   background_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-background-hook", background_hook);
+  s7_define_constant(sc, "s7kinc-background-hook", background_hook);
   shutdown_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-shutdown-hook", shutdown_hook);
+  s7_define_constant(sc, "s7kinc-shutdown-hook", shutdown_hook);
   drop_files_hook = s7_eval_c_string(sc, "(make-hook 'file)"); // FIXME: file or files?
-  s7_define_constant(sc, "kinc-drop-files-hook", drop_files_hook);
+  s7_define_constant(sc, "s7kinc-drop-files-hook", drop_files_hook);
   cut_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-cut-hook", cut_hook);
+  s7_define_constant(sc, "s7kinc-cut-hook", cut_hook);
   copy_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-copy-hook", copy_hook);
+  s7_define_constant(sc, "s7kinc-copy-hook", copy_hook);
   paste_hook = s7_eval_c_string(sc, "(make-hook 'paste)");
-  s7_define_constant(sc, "kinc-paste-hook", paste_hook);
+  s7_define_constant(sc, "s7kinc-paste-hook", paste_hook);
   login_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-login-hook", login_hook);
+  s7_define_constant(sc, "s7kinc-login-hook", login_hook);
   logout_hook = s7_eval_c_string(sc, "(make-hook)");
-  s7_define_constant(sc, "kinc-logout-hook", logout_hook);
+  s7_define_constant(sc, "s7kinc-logout-hook", logout_hook);
 }
 
 static void s7kinc_update_cb(void) {
@@ -129,10 +130,15 @@ static void load_scm(s7_scheme *sc, const char *name) {
 }
 
 void s7kinc_init(void) {
+  /* Whether s7-kinc is running inside a development shell. */
+  bool in_dev_mode = getenv("S7KINC_DEV_SHELL") ? true : false;
+
   /* Initialize s7 */
   sc = s7_init();
 
   /* Setup REPL socket server */
+  /* TODO: Should REPL be run only in DEV mode?
+   *       Run it in all modes for now. */
   s7kinc_repl_init();
 
   /* Add hooks to various Kinc system callbacks. */
@@ -143,6 +149,12 @@ void s7kinc_init(void) {
   s7_add_to_load_path(sc, S7KINC_S7_PATH);
   s7_add_to_load_path(sc, S7KINC_KINC_PATH);
   s7_add_to_load_path(sc, S7KINC_SCHEME_PATH);
+
+  /* Define a scheme side constant which flags whether s7-kinc is being
+   * run inside a dev shell. */
+  s7_define_constant_with_documentation(
+    sc, "*s7kinc-develop-mode*", s7_make_boolean(sc, in_dev_mode),
+    "Whether s7-kinc is running inside a development shell.");
 
   /* Initialize autoloads to Kinc s7 shared library bindings. */
   load_scm(sc, "kinc.scm");
