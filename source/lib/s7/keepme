@@ -1,0 +1,5 @@
+This folder can contain overriden artifacts of s7's source.
+
+During a nix build of s7-kinc, the flake defined sources of s7 are copied here
+for the build. Files manually placed in this directory take precedence over
+those to be copied.

@@ -130,17 +130,32 @@ static void load_scm(s7_scheme *sc, const char *name) {
 }
 
 static void add_dev_load_paths(char *dev_root) {
-  kinc_log(KINC_LOG_LEVEL_INFO, "    > development root: %s\n", dev_root);
+  kinc_log(KINC_LOG_LEVEL_INFO, "    > development root: %s", dev_root);
+  /* load paths */
   sds root_path = sdscatprintf(sdsempty(), "%s%s", dev_root, (dev_root[strlen(dev_root) - 1] == '/') ? "" : "/");
   sds dev_s7_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/lib/s7");
   sds dev_kinc_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme/kinc");
   sds dev_scheme_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme");
+  /* cload directory */
+  sds dev_cload_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/lib/cload");
+  sds set_cload_dir = sdscatprintf(sdsempty(), "(set! *cload-directory* \"%s\")", dev_cload_path);
+
+  /* These paths will occur before the injected build paths in s7's *load-path*,
+   * and therefore when in develop mode, a search for a scheme file will first
+   * succeed by way of a dev path. */
   s7_add_to_load_path(sc, dev_s7_path);
   s7_add_to_load_path(sc, dev_kinc_path);
   s7_add_to_load_path(sc, dev_scheme_path);
+
+  /* Set the cload-directory. */
+  kinc_log(KINC_LOG_LEVEL_INFO, "    > cload directory: %s\n", dev_cload_path);
+  s7_eval_c_string(sc, set_cload_dir);
+
   sdsfree(dev_s7_path);
   sdsfree(dev_kinc_path);
   sdsfree(dev_scheme_path);
+  sdsfree(dev_cload_path);
+  sdsfree(set_cload_dir);
   sdsfree(root_path);
 }
 
