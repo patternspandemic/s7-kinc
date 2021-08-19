@@ -90,7 +90,7 @@ void s7kinc_repl_init(void) {
   wrapped = sdsempty();
 
   /* Initialize server and client sockets. */
-  kinc_log(KINC_LOG_LEVEL_INFO, "Setting up REPL server ...");
+  kinc_log(KINC_LOG_LEVEL_INFO, "Setting up REPL server,");
   kinc_socket_options_t server_opts;
   kinc_socket_options_set_defaults(&server_opts);
   kinc_socket_init(&server);
@@ -99,11 +99,11 @@ void s7kinc_repl_init(void) {
   /* Open server socket and listen. */
   kinc_affirm_message(
     kinc_socket_open(&server, KINC_SOCKET_PROTOCOL_TCP, REPL_BUFFER_PORT, &server_opts),
-    "Could not open server socket.");
+    "    ! Could not open server socket.\n");
   kinc_affirm_message(
     kinc_socket_listen(&server, 1),
-    "Could not listen on server socket.");
-  kinc_log(KINC_LOG_LEVEL_INFO, "Awaiting connection ...");
+    "    ! Could not listen on server socket.\n");
+  kinc_log(KINC_LOG_LEVEL_INFO, "    > awaiting connection.\n");
 }
 
 void s7kinc_repl_cleanup(void) {

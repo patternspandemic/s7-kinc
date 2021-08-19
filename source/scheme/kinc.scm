@@ -2,7 +2,7 @@
 (provide 'kinc.scm)
 
 
-(format *stderr* "Running in ~A mode.~%" (if *s7kinc-develop-mode* "DEV" "BUILD"))
+;(format *stderr* "Running in ~A mode.~%" (if *s7kinc-develop-mode* "DEV" "BUILD"))
 
 ;; The list of requirable kinc libraries.
 (define kinc-libs

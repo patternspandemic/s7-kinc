@@ -4,6 +4,7 @@
 
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <kinc/color.h>
 #include <kinc/error.h>
@@ -12,6 +13,7 @@
 #include <kinc/system.h>
 
 #include "../lib/s7/s7.h"
+#include "../lib/sds/sds.h" // Simple Dynamic Strings
 #include "repl.h"
 
 /* S7KINC PATHS INJECTED HERE */

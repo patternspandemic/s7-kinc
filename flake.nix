@@ -42,8 +42,7 @@
             buildInputs = with pkgs; [ s7kinc s7 kode.libKinc ];
             #inputsFrom = builtins.attrValues self.packages.${system};
             S7KINC_DEV_SHELL = "1";
-            # Or, just have s7-kinc look for this envvar?
-            S7KINC_DEV_PATH = "/home/pattern/repos/s7-kinc/source";
+            S7KINC_DEV_ROOT = "/home/pattern/repos/s7-kinc";
             #shellHook = '''';
           };
 

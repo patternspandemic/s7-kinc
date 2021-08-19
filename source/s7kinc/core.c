@@ -129,12 +129,58 @@ static void load_scm(s7_scheme *sc, const char *name) {
   }
 }
 
+static void add_dev_load_paths(char *dev_root) {
+  kinc_log(KINC_LOG_LEVEL_INFO, "    > development root: %s\n", dev_root);
+  sds root_path = sdscatprintf(sdsempty(), "%s%s", dev_root, (dev_root[strlen(dev_root) - 1] == '/') ? "" : "/");
+  sds dev_s7_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/lib/s7");
+  sds dev_kinc_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme/kinc");
+  sds dev_scheme_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme");
+  s7_add_to_load_path(sc, dev_s7_path);
+  s7_add_to_load_path(sc, dev_kinc_path);
+  s7_add_to_load_path(sc, dev_scheme_path);
+  sdsfree(dev_s7_path);
+  sdsfree(dev_kinc_path);
+  sdsfree(dev_scheme_path);
+  sdsfree(root_path);
+}
+
 void s7kinc_init(void) {
+  /* Initialize s7 */
+  sc = s7_init();
+
   /* Whether s7-kinc is running inside a development shell. */
   bool in_dev_mode = getenv("S7KINC_DEV_SHELL") ? true : false;
 
-  /* Initialize s7 */
-  sc = s7_init();
+  /* Define a scheme side constant which flags whether s7-kinc is being
+   * run inside a dev shell. */
+  s7_define_constant_with_documentation(
+    sc, "*s7kinc-develop-mode*", s7_make_boolean(sc, in_dev_mode),
+    "Whether s7-kinc is running inside a development shell.");
+
+  /* Add build paths to s7's load-path. These were injected at build time. See s7kinc.nix */
+  s7_add_to_load_path(sc, S7KINC_S7_PATH);
+  s7_add_to_load_path(sc, S7KINC_KINC_PATH);
+  s7_add_to_load_path(sc, S7KINC_SCHEME_PATH);
+
+  /* Develop mode additions. */
+  if (in_dev_mode) {
+    kinc_log(KINC_LOG_LEVEL_INFO, "Running in develop mode,");
+    /* Add local develop paths to s7's load-path when s7-kinc is run inside a
+     * development shell. If the env variable "S7KINC_DEV_ROOT" defines a path
+     * use it as the root, otherwise use the current working dir. */
+    char *dev_root = getenv("S7KINC_DEV_ROOT");
+    if(dev_root) {
+      sds test = sdscatprintf(sdsempty(), "(directory? \"%s\")", dev_root);
+      if(s7_boolean(sc, s7_eval_c_string(sc, test))) {
+        add_dev_load_paths(dev_root);
+      }
+      sdsfree(test);
+    } else { /* Use current working dir as the dev root. */
+      char *cwd = getcwd(NULL, 0);
+      add_dev_load_paths(cwd);
+      free(cwd);
+    }
+  }
 
   /* Setup REPL socket server */
   /* TODO: Should REPL be run only in DEV mode?
@@ -144,17 +190,6 @@ void s7kinc_init(void) {
   /* Add hooks to various Kinc system callbacks. */
   make_hooks();
   set_callbacks();
-
-  /* The following paths were injected at build time. See s7kinc.nix */
-  s7_add_to_load_path(sc, S7KINC_S7_PATH);
-  s7_add_to_load_path(sc, S7KINC_KINC_PATH);
-  s7_add_to_load_path(sc, S7KINC_SCHEME_PATH);
-
-  /* Define a scheme side constant which flags whether s7-kinc is being
-   * run inside a dev shell. */
-  s7_define_constant_with_documentation(
-    sc, "*s7kinc-develop-mode*", s7_make_boolean(sc, in_dev_mode),
-    "Whether s7-kinc is running inside a development shell.");
 
   /* Initialize autoloads to Kinc s7 shared library bindings. */
   load_scm(sc, "kinc.scm");
