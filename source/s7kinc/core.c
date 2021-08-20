@@ -134,7 +134,7 @@ static void add_dev_load_paths(char *dev_root) {
   /* load paths */
   sds root_path = sdscatprintf(sdsempty(), "%s%s", dev_root, (dev_root[strlen(dev_root) - 1] == '/') ? "" : "/");
   sds dev_s7_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/lib/s7");
-  sds dev_kinc_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme/kinc");
+//  sds dev_kinc_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme/kinc");
   sds dev_scheme_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme");
   /* cload directory */
   sds dev_cload_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/lib/cload");
@@ -144,7 +144,7 @@ static void add_dev_load_paths(char *dev_root) {
    * and therefore when in develop mode, a search for a scheme file will first
    * succeed by way of a dev path. */
   s7_add_to_load_path(sc, dev_s7_path);
-  s7_add_to_load_path(sc, dev_kinc_path);
+//  s7_add_to_load_path(sc, dev_kinc_path);
   s7_add_to_load_path(sc, dev_scheme_path);
 
   /* Set the cload-directory. */
@@ -152,7 +152,7 @@ static void add_dev_load_paths(char *dev_root) {
   s7_eval_c_string(sc, set_cload_dir);
 
   sdsfree(dev_s7_path);
-  sdsfree(dev_kinc_path);
+//  sdsfree(dev_kinc_path);
   sdsfree(dev_scheme_path);
   sdsfree(dev_cload_path);
   sdsfree(set_cload_dir);
@@ -172,10 +172,13 @@ void s7kinc_init(void) {
     sc, "*s7kinc-develop-mode*", s7_make_boolean(sc, in_dev_mode),
     "Whether s7-kinc is running inside a development shell.");
 
-  /* Add build paths to s7's load-path. These were injected at build time. See s7kinc.nix */
+  /* Add build paths to s7's load-path. These were injected at build time. See s7kinc.nix
+   * Setting the cload directory also adds it to the load path. */
   s7_add_to_load_path(sc, S7KINC_S7_PATH);
-  s7_add_to_load_path(sc, S7KINC_KINC_PATH);
   s7_add_to_load_path(sc, S7KINC_SCHEME_PATH);
+  sds set_cload_path = sdscatprintf(sdsempty(), "(set! *cload-directory* \"%s\")", S7KINC_CLOAD_PATH);
+  s7_eval_c_string(sc, set_cload_path);
+  sdsfree(set_cload_path);
 
   /* Develop mode additions. */
   if (in_dev_mode) {

@@ -90,7 +90,7 @@ EOF
       # Inject load paths into s7kinc's core.h. These are used in non-develop mode.
       substituteInPlace s7kinc/core.h \
         --replace "S7_PATH" "S7_PATH \"${builtins.placeholder "out"}/s7kinc/s7\"" \
-        --replace "KINC_PATH" "KINC_PATH \"${builtins.placeholder "out"}/s7kinc/kinc\"" \
+        --replace "CLOAD_PATH" "CLOAD_PATH \"${builtins.placeholder "out"}/s7kinc/cload\"" \
         --replace "SCHEME_PATH" "SCHEME_PATH \"${builtins.placeholder "out"}/s7kinc/scheme\""
 
       # Copy s7 sources into s7-kinc tree where its expected. Allow in place overrides.
@@ -100,7 +100,7 @@ EOF
       # Build the s7-kinc program.
       gcc -o ${binName} main.c s7kinc/core.c s7kinc/repl.c lib/sds/sds.c lib/s7/s7.c -O2 -g -Wl,-export-dynamic -ldl -lm ${lib.optionalString withGmp gmpLdOpts} -lKinc
 
-      # Use s7i to pre-compile shared libraries for included lib*.scm
+      # Use s7i to pre-compile shared libraries for included lib/s7/lib*.scm
       pushd lib/s7/
       for s7lib in ${concatMapStringsSep " " (n: n + ".scm") (filter (f: hasPrefix "lib" f) s7SchemeFiles)}
       do
@@ -112,7 +112,6 @@ EOF
       # lib/s7 in case of override. The s7 header is required due to the
       # generated .c file using "s7.h" over "<s7.h>".
       pushd scheme/kinc/
-#      cp  ${s7}/s7/{cload.scm,s7.h} .
       cp ../../lib/s7/{cload.scm,s7.h} .
       find . -type f -name "*.scm" -exec ${s7}/bin/s7i '{}' \;
       popd
@@ -123,19 +122,23 @@ EOF
     '';
 
     installPhase = ''
-      mkdir -p $out/bin $out/s7kinc/s7 $out/s7kinc/kinc $out/s7kinc/scheme
+      mkdir -p $out/bin $out/s7kinc/s7 $out/s7kinc/cload $out/s7kinc/scheme
 
       # Required s7 items
       cp -r lib/s7/* $out/s7kinc/s7
+      ln -s $out/s7kinc/s7/{*.c,*.so} $out/s7kinc/cload
 
       # Precompiled s7 kinc bindings
       pushd scheme/kinc/
-      find . -type f -name "kinc_*_s7.*" -print0 | cpio -pdm0 $out/s7kinc/kinc
+      find . -type f -name "kinc_*_s7.*" -print0 | cpio -pdm0 $out/s7kinc/cload
       popd
+
+      # TODO: cpio pre-compiled 'other' .c,.so into cload
 
       # Project .scm files
       pushd scheme/
-      find . -type f -name "*.scm" -not -path "./kinc/*" -print0 | cpio -pdm0 $out/s7kinc/scheme
+      #find . -type f -name "*.scm" -not -path "./kinc/*" -print0 | cpio -pdm0 $out/s7kinc/scheme
+      find . -type f -name "*.scm" -print0 | cpio -pdm0 $out/s7kinc/scheme
       popd
 
       # The binary itself
