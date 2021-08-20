@@ -8,3 +8,5 @@
 (c-define
  '()
  "" "kinc/system.h" "" "-lKinc" "kinc_system_s7")
+
+#t

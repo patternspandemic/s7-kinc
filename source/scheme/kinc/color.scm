@@ -38,3 +38,7 @@ static s7_pointer g_kinc_color_components(s7_scheme *sc, s7_pointer args)
    (C-init "s7_provide(sc, \"kinc/color\");")
    )
  "" "kinc/color.h" "" "-lKinc" "kinc_color_s7")
+
+(define KINC_COLOR_KINC #x4B696E63)
+
+#t

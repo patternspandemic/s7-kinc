@@ -8,3 +8,5 @@
 (c-define
  '()
  "" "kinc/window.h" "" "-lKinc" "kinc_window_s7")
+
+#t

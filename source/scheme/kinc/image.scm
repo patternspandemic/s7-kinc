@@ -8,3 +8,5 @@
 (c-define
  '()
  "" "kinc/image.h" "" "-lKinc" "kinc_image_s7")
+
+#t

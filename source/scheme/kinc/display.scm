@@ -26,3 +26,5 @@ static int kinc_display_mode_t_tag = 0;
    (C-init "kinc_display_mode_t_tag = s7_make_c_type(sc, \"<kinc_display_mode_t>\")")
   )
  "" "kinc/display.h" "" "-lKinc" "kinc_display_s7")
+
+#t

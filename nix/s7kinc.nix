@@ -16,13 +16,13 @@
 , disableDeprecated ? true
 , haveComplexNumbers ? true
 , haveComplexTrig ? true
-, withCLoader ? true
+#, withCLoader ? true # TODO: Remove withCLoader option, it's required.
 , withExtraExponentMarkers ? false
 , withGmp ? true
-, withImmutableUnquote ? false
+, withImmutableUnquote ? false # TODO: Maybe enforce false.
 , withMultithreadChecks ? false
-, withPureS7 ? false
-, withSystemExtras ? true # TODO: Remove withSystemExtras option, its required.
+, withPureS7 ? false # TODO: Maybe enforce false.
+#, withSystemExtras ? true # TODO: Remove withSystemExtras option, its required.
 , s7Debugging ? false
 
 # Names of extra .scm files to include from the s7 distribution not already included below:
@@ -77,13 +77,13 @@ in
 #define DISABLE_DEPRECATED ${toDefineVal disableDeprecated}
 #define HAVE_COMPLEX_NUMBERS ${toDefineVal haveComplexNumbers}
 #define HAVE_COMPLEX_TRIG ${toDefineVal haveComplexTrig}
-//#define WITH_C_LOADER ${toDefineVal withCLoader}
+#define WITH_C_LOADER 1
 #define WITH_EXTRA_EXPONENT_MARKERS ${toDefineVal withExtraExponentMarkers}
 #define WITH_GMP ${toDefineVal withGmp}
-//#define WITH_IMMUTABLE_UNQUOTE ${toDefineVal withImmutableUnquote}
+#define WITH_IMMUTABLE_UNQUOTE ${toDefineVal withImmutableUnquote}
 #define WITH_MULTITHREAD_CHECKS ${toDefineVal withMultithreadChecks}
-//#define WITH_PURE_S7 ${toDefineVal withPureS7}
-#define WITH_SYSTEM_EXTRAS ${toDefineVal withSystemExtras}
+#define WITH_PURE_S7 ${toDefineVal withPureS7}
+#define WITH_SYSTEM_EXTRAS 1
 #define S7_DEBUGGING ${toDefineVal s7Debugging}
 EOF
 
@@ -93,10 +93,9 @@ EOF
         --replace "KINC_PATH" "KINC_PATH \"${builtins.placeholder "out"}/s7kinc/kinc\"" \
         --replace "SCHEME_PATH" "SCHEME_PATH \"${builtins.placeholder "out"}/s7kinc/scheme\""
 
-      # Copy s7 sources into s7-kinc tree where its expected.
-      # TODO: cp only when non-existant and warn otherwise to allow for user override?
-      cp ${s7}/s7/s7.{h,c} ./lib/s7/
-      cp ${s7}/s7/{${concatStringsSep "," s7SchemeFiles}}.scm ./lib/s7/
+      # Copy s7 sources into s7-kinc tree where its expected. Allow in place overrides.
+      cp --no-clobber ${s7}/s7/s7.{h,c} ./lib/s7/
+      cp --no-clobber ${s7}/s7/{${concatStringsSep "," s7SchemeFiles}}.scm ./lib/s7/
 
       # Build the s7-kinc program.
       gcc -o ${binName} main.c s7kinc/core.c s7kinc/repl.c lib/sds/sds.c lib/s7/s7.c -O2 -g -Wl,-export-dynamic -ldl -lm ${lib.optionalString withGmp gmpLdOpts} -lKinc
@@ -109,16 +108,18 @@ EOF
       done
       popd
 
-      # Do the same for the s7kinc bindings.
+      # Do the same for the s7kinc bindings. Make sure to use the cload from
+      # lib/s7 in case of override. The s7 header is required due to the
+      # generated .c file using "s7.h" over "<s7.h>".
       pushd scheme/kinc/
-      # TODO: Investigate possible bug. `cload.scm` can't be found even though
-      #       it's in s7i's load-path. Here we get it to work by copying it to
-      #       the working directory.
-      # TODO: Another problem, being that the generated c file include "s7.h"
-      #       instead of <s7.h>, thus the header is also copied.
-      cp  ${s7}/s7/{cload.scm,s7.h} .
+#      cp  ${s7}/s7/{cload.scm,s7.h} .
+      cp ../../lib/s7/{cload.scm,s7.h} .
       find . -type f -name "*.scm" -exec ${s7}/bin/s7i '{}' \;
       popd
+
+      # TODO: Pre-compile all 'other' files which make use of cload in scheme/
+      #       Use a naming convention like 'lib*.scm' ? or just run every .scm
+      #       file through s7i to potentially generate a .so?
     '';
 
     installPhase = ''
@@ -130,11 +131,10 @@ EOF
       # Precompiled s7 kinc bindings
       pushd scheme/kinc/
       find . -type f -name "kinc_*_s7.*" -print0 | cpio -pdm0 $out/s7kinc/kinc
-#      find . -type f -name "*.so" -print0 | cpio -pdm0 $out/s7kinc/kinc
       popd
 
-      pushd scheme/
       # Project .scm files
+      pushd scheme/
       find . -type f -name "*.scm" -not -path "./kinc/*" -print0 | cpio -pdm0 $out/s7kinc/scheme
       popd
 
