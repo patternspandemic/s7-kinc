@@ -30,6 +30,9 @@
 
 # Name of the compiled binary:
 , binName ? "s7-kinc"
+
+# TODO: Offer Release Build by default with stripped down dependencies.
+, releaseBuild ? true
 }:
 
 let
