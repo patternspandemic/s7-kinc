@@ -134,7 +134,6 @@ static void add_dev_load_paths(char *dev_root) {
   /* load paths */
   sds root_path = sdscatprintf(sdsempty(), "%s%s", dev_root, (dev_root[strlen(dev_root) - 1] == '/') ? "" : "/");
   sds dev_s7_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/lib/s7");
-//  sds dev_kinc_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme/kinc");
   sds dev_scheme_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/scheme");
   /* cload directory */
   sds dev_cload_path = sdscatprintf(sdsempty(), "%s%s", root_path, "source/lib/cload");
@@ -144,7 +143,6 @@ static void add_dev_load_paths(char *dev_root) {
    * and therefore when in develop mode, a search for a scheme file will first
    * succeed by way of a dev path. */
   s7_add_to_load_path(sc, dev_s7_path);
-//  s7_add_to_load_path(sc, dev_kinc_path);
   s7_add_to_load_path(sc, dev_scheme_path);
 
   /* Set the cload-directory. */
@@ -152,7 +150,6 @@ static void add_dev_load_paths(char *dev_root) {
   s7_eval_c_string(sc, set_cload_dir);
 
   sdsfree(dev_s7_path);
-//  sdsfree(dev_kinc_path);
   sdsfree(dev_scheme_path);
   sdsfree(dev_cload_path);
   sdsfree(set_cload_dir);

@@ -6,6 +6,27 @@ Here you'll find [[https://github.com/Kode/Kinc][Kinc]] bindings for [[https://c
 
 Work in Progress, not usable by others.
 
+*** Progress of Documentation
+
+- [ ] Documentation
+  + [ ] Getting Started
+  + [ ] Project Layout
+  + [ ] Building
+  + [ ] Interactive Development
+    - [ ] Developer shell environment vars
+  + [ ] Examples
+
+*** Progress of Application
+
+- [-] s7-kinc
+  + [X] embed s7 interpreter
+  + [X] allow access to the interpreter via a socket server
+  + [ ] redirect s7's stderr out to socket clients
+  + [ ] organize logging
+  + [-] Builds
+    - [-] release build with stripped dependencies / source
+    - [X] development build with shell / load-paths overridden
+
 *** Progress of Bindings
 
 - [-] Kinc
