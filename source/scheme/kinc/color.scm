@@ -35,7 +35,6 @@ static s7_pointer g_kinc_color_components(s7_scheme *sc, s7_pointer args)
 
    (C-function ("kinc_color_components" g_kinc_color_components "(kinc_color_components 32bit-ARGB-color) returns a list: (a r g b)" 1))
 
-   (C-init "s7_provide(sc, \"kinc/color\");")
    )
  "" "kinc/color.h" "" "-lKinc" "kinc_color_s7")
 
