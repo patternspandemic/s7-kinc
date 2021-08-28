@@ -156,11 +156,12 @@ static s7_pointer g_kinc_display_mode_t__set(s7_scheme *sc, s7_pointer args) {
 
     obj = s7_car(args);
     obj_type = s7_c_object_type(obj);
-    if (obj_type != kinc_display_mode_t_s7tag)
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a kinc_display_mode_t\"));
 
     if (s7_is_immutable(obj))
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a mutable cstruct\"));
+        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a mutable kinc_display_mode_t\"));
+
+    if (obj_type != kinc_display_mode_t_s7tag)
+        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a kinc_display_mode_t\"));
 
     kw = s7_cadr(args);
     if (!s7_is_keyword(kw))
@@ -284,6 +285,6 @@ static void configure_kinc_display_mode_t(s7_scheme *sc) {
 
    (C-init "configure_kinc_display_mode_t(sc);")
   )
- "" '("sds.h" "kinc/display.h") "-Isource/lib/sds/" "-lKinc" "kinc_display_s7")
+ "" '("sds.h" "kinc/display.h") "-Isource/lib/sds/" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_display_s7")))
 
 #t
