@@ -5,8 +5,11 @@
 (require 'cload.scm)
 (provide 'kinc/system)
 
-(c-define
- '()
- "" "kinc/system.h" "" "-lKinc" "kinc_system_s7")
 
-#t
+(with-let (unlet)
+
+  (c-define
+   '()
+   "" "kinc/system.h" "" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_system_s7")))
+
+(curlet))

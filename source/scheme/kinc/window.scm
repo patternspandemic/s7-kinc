@@ -5,8 +5,11 @@
 (require 'cload.scm)
 (provide 'kinc/window)
 
-(c-define
- '()
- "" "kinc/window.h" "" "-lKinc" "kinc_window_s7")
 
-#t
+(with-let (unlet)
+
+  (c-define
+   '()
+   "" "kinc/window.h" "" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_window_s7")))
+
+(curlet))
