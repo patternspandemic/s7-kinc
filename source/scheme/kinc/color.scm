@@ -6,22 +6,22 @@
 (provide 'kinc/color)
 
 
-(c-define
- '((uint32_t (KINC_COLOR_BLACK
-              KINC_COLOR_WHITE
-              KINC_COLOR_RED
-              KINC_COLOR_BLUE
-              KINC_COLOR_GREEN
-              KINC_COLOR_MAGENTA
-              KINC_COLOR_YELLOW
-              KINC_COLOR_CYAN))
+(with-let (unlet)
 
-   ;; This has args by reference, so a list is returned in s7.
-   (in-C "
-static s7_pointer g_kinc_color_components(s7_scheme *sc, s7_pointer args)
-{
-    if (s7_is_integer(s7_car(args)))
-    {
+  (c-define
+   '((uint32_t (KINC_COLOR_BLACK
+                KINC_COLOR_WHITE
+                KINC_COLOR_RED
+                KINC_COLOR_BLUE
+                KINC_COLOR_GREEN
+                KINC_COLOR_MAGENTA
+                KINC_COLOR_YELLOW
+                KINC_COLOR_CYAN))
+
+     ;; This has args by reference, so a list is returned in s7.
+     (in-C "
+static s7_pointer g_kinc_color_components(s7_scheme *sc, s7_pointer args) {
+    if (s7_is_integer(s7_car(args))) {
         s7_int color = s7_integer(s7_car(args));
         if (color < 0)
             return(s7_out_of_range_error(sc, \"kinc_color_components\", 1, s7_car(args), \">= 0\"));
@@ -33,11 +33,11 @@ static s7_pointer g_kinc_color_components(s7_scheme *sc, s7_pointer args)
 }
 ")
 
-   (C-function ("kinc_color_components" g_kinc_color_components "(kinc_color_components 32bit-ARGB-color) returns a list: (a r g b)" 1))
+     (C-function ("kinc_color_components" g_kinc_color_components "(kinc_color_components 32bit-ARGB-color) returns a list: (a r g b)" 1))
 
-   )
- "" "kinc/color.h" "" "-lKinc" "kinc_color_s7")
+     )
+   "" "kinc/color.h" "" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_color_s7")))
 
-(define KINC_COLOR_KINC #x4B696E63)
+  (define KINC_COLOR_KINC #x4B696E63)
 
-#t
+(curlet))

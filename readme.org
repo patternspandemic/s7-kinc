@@ -11,6 +11,7 @@ Work in Progress, not usable by others.
 - [ ] Documentation
   + [ ] Getting Started
   + [ ] Project Layout
+  + [ ] Naming
   + [ ] Building
   + [ ] Interactive Development
     - [ ] Developer shell environment vars
@@ -25,6 +26,8 @@ Work in Progress, not usable by others.
   + [X] allow access to the interpreter via a socket server
   + [ ] redirect s7's stderr out to socket clients
   + [ ] organize logging
+  + [X] get .so reloads to work.
+    Done, but existing objects are still tied to previously loaded c-functions. New c-objects use newly loaded so.
   + [-] Builds
     - [-] release build with stripped dependencies / source
     - [X] development build with shell / load-paths overridden

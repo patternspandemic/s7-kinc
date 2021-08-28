@@ -6,17 +6,19 @@
 (provide 'kinc/display)
 
 
-(c-define
- '(               (void kinc_display_init (void))
-                   (int kinc_primary_display (void))
-                   (int kinc_count_displays (void))
-                  (bool kinc_display_available (int))
-                 (char* kinc_display_name (int))
-   (kinc_display_mode_t kinc_display_current_mode (int)) ; TODO: Move to In-C / C-function to capture return to scheme
-                   (int kinc_display_count_available_modes (int))
-   (kinc_display_mode_t kinc_display_available_mode (int int)) ; TODO: Move to In-C / C-function to capture return to scheme)
+(with-let (unlet)
 
-   (in-C "
+  (c-define
+   '(               (void kinc_display_init (void))
+                     (int kinc_primary_display (void))
+                     (int kinc_count_displays (void))
+                    (bool kinc_display_available (int))
+                   (char* kinc_display_name (int))
+     (kinc_display_mode_t kinc_display_current_mode (int)) ; TODO: Move to In-C / C-function to capture return to scheme
+                     (int kinc_display_count_available_modes (int))
+     (kinc_display_mode_t kinc_display_available_mode (int int)) ; TODO: Move to In-C / C-function to capture return to scheme)
+
+     (in-C "
 
 static int kinc_display_mode_t_s7tag = 0;
 
@@ -158,7 +160,7 @@ static s7_pointer g_kinc_display_mode_t__set(s7_scheme *sc, s7_pointer args) {
     obj_type = s7_c_object_type(obj);
 
     if (s7_is_immutable(obj))
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a mutable kinc_display_mode_t\"));
+        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a >>mutable<< kinc_display_mode_t\"));
 
     if (obj_type != kinc_display_mode_t_s7tag)
         return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a kinc_display_mode_t\"));
@@ -281,10 +283,11 @@ static void configure_kinc_display_mode_t(s7_scheme *sc) {
 }
 
 ")
-   ;(C-function ...)
+     ;(C-function ...)
 
-   (C-init "configure_kinc_display_mode_t(sc);")
-  )
- "" '("sds.h" "kinc/display.h") "-Isource/lib/sds/" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_display_s7")))
+     (C-init "configure_kinc_display_mode_t(sc);")
 
-#t
+     )
+   "" '("sds.h" "kinc/display.h") "-Isource/lib/sds/" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_display_s7")))
+
+(curlet))
