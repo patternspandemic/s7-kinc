@@ -18,7 +18,6 @@
                 KINC_COLOR_YELLOW
                 KINC_COLOR_CYAN))
 
-     ;; This has args by reference, so a list is returned in s7.
      (in-C "
 static s7_pointer g_kinc_color_components(s7_scheme *sc, s7_pointer args) {
     if (s7_is_integer(s7_car(args))) {

@@ -1,4 +1,4 @@
-;;; TODO: display.scm
+;;; display.scm
 ;;;
 ;;; kinc/display.h
 
@@ -14,10 +14,9 @@
                      (int kinc_count_displays (void))
                     (bool kinc_display_available (int))
                    (char* kinc_display_name (int))
-     (kinc_display_mode_t kinc_display_current_mode (int)) ; TODO: Move to In-C / C-function to capture return to scheme
                      (int kinc_display_count_available_modes (int))
-     (kinc_display_mode_t kinc_display_available_mode (int int)) ; TODO: Move to In-C / C-function to capture return to scheme)
 
+     ;; Definitions and initialization for kinc_display_mode_t
      (in-C "
 
 static int kinc_display_mode_t_s7tag = 0;
@@ -282,8 +281,61 @@ static void configure_kinc_display_mode_t(s7_scheme *sc) {
     // kinc_display_mode_t, from keywords or symbols or an environment. Define outside c-define?
 }
 
-")
-     ;(C-function ...)
+") ;; end kinc_display_mode_t
+
+     ;; Functions requiring special C-object conversion
+     (in-C "
+
+static kinc_display_mode_t *kinc_display_mode_t__value_to_ref(kinc_display_mode_t val) {
+    kinc_display_mode_t *ko = (kinc_display_mode_t *)calloc(1, sizeof(kinc_display_mode_t));
+    ko->x = val.x;
+    ko->y = val.y;
+    ko->width = val.width;
+    ko->height = val.height;
+    ko->pixels_per_inch = val.pixels_per_inch;
+    ko->frequency = val.frequency;
+    ko->bits_per_pixel = val.bits_per_pixel;
+    return(ko);
+}
+
+static s7_pointer g_kinc_display_current_mode(s7_scheme *sc, s7_pointer args) {
+    s7_pointer p, arg;
+    int display_index;
+
+    p = args;
+    arg = s7_car(p);
+    if (s7_is_integer(arg))
+        display_index = (int)s7_integer(arg);
+    else return(s7_wrong_type_arg_error(sc, __func__, 0, arg, \"integer\"));
+
+    return(s7_make_c_object(sc, kinc_display_mode_t_s7tag, (void *)kinc_display_mode_t__value_to_ref(kinc_display_current_mode(display_index))));
+}
+
+static s7_pointer g_kinc_display_available_mode(s7_scheme *sc, s7_pointer args) {
+    s7_pointer p, arg;
+    int display_index;
+    int mode_index;
+
+    p = args;
+    arg = s7_car(p);
+    if (s7_is_integer(arg))
+        display_index = (int)s7_integer(arg);
+    else return(s7_wrong_type_arg_error(sc, __func__, 1, arg, \"integer\"));
+
+    p = s7_cdr(p);
+    arg = s7_car(p);
+    if (s7_is_integer(arg))
+        mode_index = (int)s7_integer(arg);
+    else return(s7_wrong_type_arg_error(sc, __func__, 2, arg, \"integer\"));
+
+
+    return(s7_make_c_object(sc, kinc_display_mode_t_s7tag, (void *)kinc_display_mode_t__value_to_ref(kinc_display_available_mode(display_index, mode_index))));
+}
+
+") ;; end special C-object conversion
+
+     (C-function ("kinc_display_current_mode" g_kinc_display_current_mode "kinc_display_mode_t kinc_display_current_mode(int)" 1))
+     (C-function ("kinc_display_available_mode" g_kinc_display_available_mode "kinc_display_mode_t kinc_display_available_mode(int int)" 2))
 
      (C-init "configure_kinc_display_mode_t(sc);")
 
