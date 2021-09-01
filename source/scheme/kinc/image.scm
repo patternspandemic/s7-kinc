@@ -2,14 +2,16 @@
 ;;;
 ;;; kinc/image.h
 
-(require 'cload.scm)
 (provide 'kinc/image)
+
+(require 'cload.scm)
+(load (reader-cond ((provided? 'kinc.scm) "kinc/util.scm") (else "util.scm")))
 
 
 (with-let (unlet)
 
   (c-define
    '()
-   "" "kinc/image.h" "" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_image_s7")))
+   "" "kinc/image.h" "" "-lKinc" (maybe-output-name image))
 
 (curlet))

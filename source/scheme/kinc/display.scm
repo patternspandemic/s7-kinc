@@ -2,8 +2,10 @@
 ;;;
 ;;; kinc/display.h
 
-(require 'cload.scm)
 (provide 'kinc/display)
+
+(require 'cload.scm)
+(load (reader-cond ((provided? 'kinc.scm) "kinc/util.scm") (else "util.scm")))
 
 
 (with-let (unlet)
@@ -340,6 +342,6 @@ static s7_pointer g_kinc_display_available_mode(s7_scheme *sc, s7_pointer args) 
      (C-init "configure_kinc_display_mode_t(sc);")
 
      )
-   "" '("sds.h" "kinc/display.h") "-Isource/lib/sds/" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_display_s7")))
+   "" '("sds.h" "kinc/display.h") (reader-cond ((provided? 'kinc.scm) "-Isource/lib/sds/") (else "-I../../lib/sds/")) "-lKinc" (maybe-output-name display))
 
 (curlet))

@@ -39,6 +39,7 @@ static void handle_client_input(const char *str) {
   } else {
     clear_input_buffer(); // so we don't reevaluate what we're about to evaluate
     /* Evaluate the form. */
+    // TODO: Also capture std err to send with result back to repl
     s7_pointer out = s7_open_output_string(sc);
     s7_pointer out_prev = s7_set_current_output_port(sc, out);
     gc_loc = s7_gc_protect(sc, out_prev);

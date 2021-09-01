@@ -2,14 +2,16 @@
 ;;;
 ;;; kinc/window.h
 
-(require 'cload.scm)
 (provide 'kinc/window)
+
+(require 'cload.scm)
+(load (reader-cond ((provided? 'kinc.scm) "kinc/util.scm") (else "util.scm")))
 
 
 (with-let (unlet)
 
   (c-define
    '()
-   "" "kinc/window.h" "" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_window_s7")))
+   "" "kinc/window.h" "" "-lKinc" (maybe-output-name window))
 
 (curlet))

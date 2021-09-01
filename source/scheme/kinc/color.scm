@@ -2,8 +2,10 @@
 ;;;
 ;;; kinc/color.h
 
-(require 'cload.scm)
 (provide 'kinc/color)
+
+(require 'cload.scm)
+(load (reader-cond ((provided? 'kinc.scm) "kinc/util.scm") (else "util.scm")))
 
 
 (with-let (unlet)
@@ -35,7 +37,7 @@ static s7_pointer g_kinc_color_components(s7_scheme *sc, s7_pointer args) {
      (C-function ("kinc_color_components" g_kinc_color_components "(kinc_color_components 32bit-ARGB-color) returns a list: (a r g b)" 1))
 
      )
-   "" "kinc/color.h" "" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_color_s7")))
+   "" "kinc/color.h" "" "-lKinc" (maybe-output-name color))
 
   (define KINC_COLOR_KINC #x4B696E63)
 

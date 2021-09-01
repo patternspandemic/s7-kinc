@@ -2,14 +2,16 @@
 ;;;
 ;;; kinc/system.h
 
-(require 'cload.scm)
 (provide 'kinc/system)
+
+(require 'cload.scm)
+(load (reader-cond ((provided? 'kinc.scm) "kinc/util.scm") (else "util.scm")))
 
 
 (with-let (unlet)
 
   (c-define
    '()
-   "" "kinc/system.h" "" "-lKinc" (reader-cond ((not (string=? "1" (getenv "S7KINC_DEV_SHELL"))) "kinc_system_s7")))
+   "" "kinc/system.h" "" "-lKinc" (maybe-output-name system))
 
 (curlet))
