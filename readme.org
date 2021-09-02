@@ -32,6 +32,9 @@ Work in Progress, not usable by others.
     - [-] release build with stripped dependencies / source
     - [X] development build with shell / load-paths overridden
 
+**** Some Notes
+- Prebuilt shared libs for kinc bindings seem to work, but themselves are not linked to needed sds functions. Seems not to be a problem as they're found when loaded into the main application.
+
 *** Progress of Bindings
 
 - [-] Kinc

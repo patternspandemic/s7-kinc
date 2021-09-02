@@ -10,8 +10,11 @@
 
 (with-let (unlet)
 
-  (c-define
-   '()
-   "" "kinc/image.h" "" "-lKinc" (maybe-output-name image))
+  (bind-kinc image
+    :ctypes '()
+    :c-info '(
+
+    )
+  )
 
 (curlet))

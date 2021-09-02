@@ -10,8 +10,11 @@
 
 (with-let (unlet)
 
-  (c-define
-   '()
-   "" "kinc/system.h" "" "-lKinc" (maybe-output-name system))
+  (bind-kinc system
+    :ctypes '()
+    :c-info '(
+
+    )
+  )
 
 (curlet))

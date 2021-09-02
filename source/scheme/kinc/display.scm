@@ -10,16 +10,26 @@
 
 (with-let (unlet)
 
-  (c-define
-   '(               (void kinc_display_init (void))
-                     (int kinc_primary_display (void))
-                     (int kinc_count_displays (void))
-                    (bool kinc_display_available (int))
-                   (char* kinc_display_name (int))
-                     (int kinc_display_count_available_modes (int))
+  (bind-kinc display
+    :ctypes '((kinc_display_mode_t
+               (int x)
+               (int y)
+               (int width)
+               (int height)
+               (int pixels_per_inch)
+               (int frequency)
+               (int bits_per_pixel)))
 
-     ;; Definitions and initialization for kinc_display_mode_t
-     (in-C "
+    :c-info '(
+       (void kinc_display_init (void))
+        (int kinc_primary_display (void))
+        (int kinc_count_displays (void))
+       (bool kinc_display_available (int))
+      (char* kinc_display_name (int))
+        (int kinc_display_count_available_modes (int))
+
+      ;; Definitions and initialization for kinc_display_mode_t
+      (in-C "
 
 static int kinc_display_mode_t_s7tag = 0;
 
@@ -285,9 +295,10 @@ static void configure_kinc_display_mode_t(s7_scheme *sc) {
 
 ") ;; end kinc_display_mode_t
 
-     ;; Functions requiring special C-object conversion
-     (in-C "
+      ;; Functions requiring special C-object conversion
+      (in-C "
 
+// TODO: Generate this helper for all ctypes?
 static kinc_display_mode_t *kinc_display_mode_t__value_to_ref(kinc_display_mode_t val) {
     kinc_display_mode_t *ko = (kinc_display_mode_t *)calloc(1, sizeof(kinc_display_mode_t));
     ko->x = val.x;
@@ -336,12 +347,12 @@ static s7_pointer g_kinc_display_available_mode(s7_scheme *sc, s7_pointer args) 
 
 ") ;; end special C-object conversion
 
-     (C-function ("kinc_display_current_mode" g_kinc_display_current_mode "kinc_display_mode_t kinc_display_current_mode(int)" 1))
-     (C-function ("kinc_display_available_mode" g_kinc_display_available_mode "kinc_display_mode_t kinc_display_available_mode(int int)" 2))
+      (C-function ("kinc_display_current_mode" g_kinc_display_current_mode "kinc_display_mode_t kinc_display_current_mode(int)" 1))
+      (C-function ("kinc_display_available_mode" g_kinc_display_available_mode "kinc_display_mode_t kinc_display_available_mode(int int)" 2))
 
-     (C-init "configure_kinc_display_mode_t(sc);")
+      (C-init "configure_kinc_display_mode_t(sc);")
 
-     )
-   "" '("sds.h" "kinc/display.h") (reader-cond ((provided? 'kinc.scm) "-Isource/lib/sds/") (else "-I../../lib/sds/")) "-lKinc" (maybe-output-name display))
+    )
+  )
 
 (curlet))

@@ -10,8 +10,11 @@
 
 (with-let (unlet)
 
-  (c-define
-   '()
-   "" "kinc/window.h" "" "-lKinc" (maybe-output-name window))
+  (bind-kinc window
+    :ctypes '()
+    :c-info '(
+
+    )
+  )
 
 (curlet))
