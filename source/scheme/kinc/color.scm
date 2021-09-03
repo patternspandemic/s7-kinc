@@ -12,14 +12,14 @@
 
   (bind-kinc color
     :c-info '(
-      (uint32_t (KINC_COLOR_BLACK
-                 KINC_COLOR_WHITE
-                 KINC_COLOR_RED
-                 KINC_COLOR_BLUE
-                 KINC_COLOR_GREEN
-                 KINC_COLOR_MAGENTA
-                 KINC_COLOR_YELLOW
-                 KINC_COLOR_CYAN))
+      (C-macro (uint32_t (KINC_COLOR_BLACK
+                          KINC_COLOR_WHITE
+                          KINC_COLOR_RED
+                          KINC_COLOR_BLUE
+                          KINC_COLOR_GREEN
+                          KINC_COLOR_MAGENTA
+                          KINC_COLOR_YELLOW
+                          KINC_COLOR_CYAN)))
 
       (in-C "
 static s7_pointer g_kinc_color_components(s7_scheme *sc, s7_pointer args) {

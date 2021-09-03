@@ -39,13 +39,13 @@ Work in Progress, not usable by others.
 
 - [-] Kinc
   + [X] color
-  + [ ] display
+  + [X] display
   + [ ] error
   + [ ] image
   + [ ] log
   + [ ] system
   + [ ] video
-  + [ ] window
+  + [-] window
   + [ ] audio1
     - [ ] audio
     - [ ] sound
