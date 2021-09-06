@@ -1,6 +1,10 @@
 #include "core.h"
 
 
+/* TODO: When the Linux backend implements multiple windows, support multiple
+ * windows and the data parameter for resize and ppi_changed callback hooks. It
+ * may be better to move these hooks out of core.c */
+
 /* TODO: Temporary */
 static uint32_t clear_color = KINC_COLOR_KINC;
 
@@ -17,6 +21,8 @@ static s7_pointer copy_hook;
 static s7_pointer paste_hook;
 static s7_pointer login_hook;
 static s7_pointer logout_hook;
+static s7_pointer resize_hook;
+static s7_pointer ppi_changed_hook;
 
 
 /* TODO: Temporary */
@@ -59,6 +65,10 @@ static void make_hooks(void) {
   s7_define_constant(sc, "s7kinc-login-hook", login_hook);
   logout_hook = s7_eval_c_string(sc, "(make-hook)");
   s7_define_constant(sc, "s7kinc-logout-hook", logout_hook);
+  resize_hook = s7_eval_c_string(sc, "(make-hook 'width 'height)"); // FIXME: What about data, multiple windows?
+  s7_define_constant(sc, "s7kinc-resize-hook", resize_hook);
+  ppi_changed_hook = s7_eval_c_string(sc, "(make-hook 'ppi)"); // FIXME: What about data, multiple windows?
+  s7_define_constant(sc, "s7kinc-ppi-changed-hook", ppi_changed_hook);
 }
 
 static void s7kinc_update_cb(void) {
@@ -107,6 +117,14 @@ static void s7kinc_paste_cb(char *paste) {
 static void s7kinc_login_cb(void) { s7_call(sc, login_hook, s7_nil(sc)); }
 static void s7kinc_logout_cb(void) { s7_call(sc, logout_hook, s7_nil(sc)); }
 
+static void s7kinc_resize_cb(int width, int height, void *data) {
+  s7_call(sc, resize_hook, s7_list(sc, 2, s7_make_integer(sc, width), s7_make_integer(sc, height)));
+}
+
+static void s7kinc_ppi_changed_cb(int ppi, void *data) {
+  s7_call(sc, ppi_changed_hook, s7_list(sc, 1, s7_make_integer(sc, ppi)));
+}
+
 static void set_callbacks(void) {
   kinc_set_update_callback(s7kinc_update_cb);
   kinc_set_foreground_callback(s7kinc_foreground_cb);
@@ -120,6 +138,8 @@ static void set_callbacks(void) {
   kinc_set_paste_callback(s7kinc_paste_cb);
   kinc_set_login_callback(s7kinc_login_cb);
   kinc_set_logout_callback(s7kinc_logout_cb);
+  kinc_window_set_resize_callback(0, s7kinc_resize_cb, NULL); // NOTE: Supports only main window, ignores 'data' param
+  kinc_window_set_ppi_changed_callback(0, s7kinc_ppi_changed_cb, NULL); // NOTE: Supports only main window, ignores 'data' param
 }
 
 static void load_scm(s7_scheme *sc, const char *name) {

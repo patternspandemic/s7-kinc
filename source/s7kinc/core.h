@@ -11,6 +11,7 @@
 #include <kinc/graphics4/graphics.h>
 #include <kinc/log.h>
 #include <kinc/system.h>
+#include <kinc/window.h>
 
 #include "../lib/s7/s7.h"
 #include "../lib/sds/sds.h" // Simple Dynamic Strings

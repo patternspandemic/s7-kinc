@@ -112,3 +112,27 @@ Work in Progress, not usable by others.
     - [ ] thread
     - [ ] threadlocal
   + [ ] vr
+
+*** Linux Backend Not Implemented
+
+The following functions are '!' (not yet implemented / empty definition), or '~' (may possibly be improved), in Kinc's Linux backend:
+
+~ kinc_display_available
+~ kinc_display_name
+~ kinc_display_count_available_modes
+~ kinc_display_available_mode
+
+! kinc_window_create
+! kinc_window_destroy
+! kinc_count_windows
+! kinc_window_resize
+! kinc_window_move
+! kinc_window_change_features
+! kinc_window_change_framebuffer
+! kinc_window_x
+! kinc_window_y
+! kinc_window_display
+! kinc_window_show
+! kinc_window_hide
+! kinc_window_set_ppi_changed_callback
+! kinc_window_vsynced
