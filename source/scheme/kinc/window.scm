@@ -63,8 +63,8 @@
       (void kinc_window_hide (int))
       (void kinc_window_set_title (int char*))
       ;; NOTE: Basic hooks for these callbacks are set in core.c
-      ;(void kinc_window_set_resize_callback (int window, void(*callback)(int x, int y, void *data), void *data))
-      ;(void kinc_window_set_ppi_changed_callback (int window, void(*callback)(int ppi, void *data), void *data)) ; NOTE: Backend Not Implemented
+      ;void kinc_window_set_resize_callback (int window, void(*callback)(int x, int y, void *data), void *data)
+      ;void kinc_window_set_ppi_changed_callback (int window, void(*callback)(int ppi, void *data), void *data) ; NOTE: Backend Not Implemented
       (bool kinc_window_vsynced (int))
     )
   )
