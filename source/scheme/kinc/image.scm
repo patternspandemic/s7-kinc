@@ -49,7 +49,16 @@
       (size_t kinc_image_size_from_encoded_bytes (void* size_t char*))
          (int kinc_image_format_sizeof ((kinc_image_format_t int)))
 
-      ;; TODO: Special functions
+      ;; Functions requiring special C-object conversion
+;;       (in-C "
+;;       ;; TODO: Special functions
+
+;; static s7_pointer g_(s7_scheme *sc, s7_pointer args) {
+
+;; }
+
+;; ") ;; end special C-object conversion
+
         ;(size_t kinc_image_init (kinc_image_t* void* int int kinc_image_format_t))
         ;(size_t kinc_image_init3d (kinc_image_t* void* int int int kinc_image_format_t))
         ;(size_t kinc_image_size_from_callbacks (kinc_image_read_callbacks_t void* char*))
@@ -61,6 +70,18 @@
           ;(void kinc_image_destroy (kinc_image_t*))
       ;(uint32_t kinc_image_at (kinc_image_t* int int))
       ;(uint8_t* kinc_image_get_pixels (kinc_image_t*))
+
+      ;; (C-function ("kinc_image_init" g_kinc_image_init "size_t kinc_image_init()"))
+      ;; (C-function ("kinc_image_init3d" g_kinc_image_init3d "size_t kinc_image_init3d()"))
+      ;; (C-function ("kinc_image_size_from_callbacks" g_kinc_image_size_from_callbacks "size_t kinc_image_size_from_callbacks()"))
+      ;; (C-function ("kinc_image_init_from_file" g_kinc_image_init_from_file "size_t kinc_image_init_from_file()"))
+      ;; (C-function ("kinc_image_init_from_callbacks" g_kinc_image_init_from_callbacks "size_t kinc_image_init_from_callbacks()"))
+      ;; (C-function ("kinc_image_init_from_encoded_bytes" g_kinc_image_init_from_encoded_bytes "size_t kinc_image_init_from_encoded_bytes()"))
+      ;; (C-function ("kinc_image_init_from_bytes" g_kinc_image_init_from_bytes "void kinc_image_init_from_bytes()"))
+      ;; (C-function ("kinc_image_init_from_bytes3d" g_kinc_image_init_from_bytes3d "void kinc_image_init_from_bytes3d()"))
+      ;; (C-function ("kinc_image_destroy" g_kinc_image_destroy "void kinc_image_destroy()"))
+      ;; (C-function ("kinc_image_at" g_kinc_image_at "uint32_t kinc_image_at()"))
+      ;; (C-function ("kinc_image_get_pixels" g_kinc_image_get_pixels "uint8_t* kinc_image_get_pixels()"))
     )
   )
 

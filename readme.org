@@ -41,9 +41,9 @@ Work in Progress, not usable by others.
   + [X] color
   + [X] display
   + [ ] error
-  + [ ] image
+  + [-] image
   + [ ] log
-  + [ ] system
+  + [-] system
   + [ ] video
   + [-] window
   + [ ] audio1

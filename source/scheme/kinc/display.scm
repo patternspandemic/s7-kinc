@@ -341,7 +341,6 @@ static s7_pointer g_kinc_display_available_mode(s7_scheme *sc, s7_pointer args) 
         mode_index = (int)s7_integer(arg);
     else return(s7_wrong_type_arg_error(sc, __func__, 2, arg, \"integer\"));
 
-
     return(s7_make_c_object(sc, kinc_display_mode_t_s7tag, (void *)kinc_display_mode_t__value_to_ref(kinc_display_available_mode(display_index, mode_index))));
 }
 
