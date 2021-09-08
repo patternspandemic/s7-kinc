@@ -1,4 +1,4 @@
-;;; TODO: system.scm
+;;; system.scm
 ;;;
 ;;; kinc/system.h
 
@@ -11,6 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc system
+    :headers ("kinc/window.h")
     :c-info '(
                         (char* kinc_application_name (void))
                          (void kinc_set_application_name (char*))
@@ -41,11 +42,30 @@
       ;; Functions requiring special C-object conversion
       (in-C "
 
-// TODO: This function requires lookup of the c-object types from the *s7* 'c-types list.
-//       Try to use a named let and interator to arrive at the type ints needed.
+// TODO: Move to a c-types helper header?
+static int ctypes_name_to_s7tag(s7_scheme *sc, const char *name) {
+    s7_pointer s7let, c_types, c_type, iter;
+    int type = -1;
+
+    s7let = s7_let_ref(sc, s7_rootlet(sc), s7_make_symbol(sc, \"*s7*\"));
+    c_types = s7_let_ref(sc, s7let, s7_make_symbol(sc, \"c-types\"));
+    iter = s7_make_iterator(sc, c_types);
+    if (s7_iterator_is_at_end(sc, iter))
+        return -1; // No c-types.
+
+    // As c-types are assigned sequentially, run through whole list to capture
+    // type of most recent duplicate name in the case of develop mode duplicates.
+    for(int i = 0; !s7_iterator_is_at_end(sc, iter); i++) {
+        c_type = s7_iterate(sc, iter);
+        if (0 == strcmp(s7_string(c_type), name))
+            type = i;
+    }
+    return(type);
+}
+
 static s7_pointer g_kinc_init(s7_scheme *sc, s7_pointer args) {
     s7_pointer p, name, width, height, wo, fo;
-    s7_int obj_type;
+    s7_int obj_type, wo_s7tag, fo_s7tag;
 
     if (s7_list_length(sc, args) != 5)
         return(s7_wrong_number_of_args_error(sc, \"kinc_init takes 5 arguments: ~S\", args));
@@ -65,12 +85,14 @@ static s7_pointer g_kinc_init(s7_scheme *sc, s7_pointer args) {
     p = s7_cdr(p);
     wo = s7_car(p);
     obj_type = s7_c_object_type(wo);
-    if (obj_type != kinc_window_options_t_s7tag)
+    wo_s7tag = ctypes_name_to_s7tag(sc, \"<kinc_window_options_t>\");
+    if (obj_type != wo_s7tag)
         return(s7_wrong_type_arg_error(sc, \"kinc_init\", 4, wo, \"a kinc_window_options_t\"));
     p = s7_cdr(p);
     fo = s7_car(p);
     obj_type = s7_c_object_type(fo);
-    if (obj_type != kinc_framebuffer_options_t_s7tag)
+    fo_s7tag = ctypes_name_to_s7tag(sc, \"<kinc_framebuffer_options_t>\");
+    if (obj_type != fo_s7tag)
         return(s7_wrong_type_arg_error(sc, \"kinc_init\", 5, fo, \"a kinc_framebuffer_options_t\"));
 
     return(s7_make_integer(sc, kinc_init(s7_string(name), s7_integer(width), s7_integer(height),

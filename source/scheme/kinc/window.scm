@@ -125,8 +125,6 @@ static s7_pointer g_kinc_window_create(s7_scheme *sc, s7_pointer args) {
 }
 
 static s7_pointer g_kinc_window_change_framebuffer(s7_scheme *sc, s7_pointer args) {
-    // void kinc_window_change_framebuffer (int kinc_framebuffer_options_t*)
-
     s7_pointer p, i, fo;
     s7_int obj_type;
 
