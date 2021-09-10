@@ -184,19 +184,19 @@ static s7_pointer kinc_display_mode_t__set_field_by_kw(s7_scheme *sc, kinc_displ
 //    return kinc_display_mode_t__set_field_by_kw(sc, ko, kw, s7_caddr(args));
 //}
 
-static sds kinc_display_mode_t__display(s7_scheme *sc, void *value) {
-    kinc_display_mode_t *ko = (kinc_display_mode_t *)value;
-    sds rep = sdscatprintf(sdsempty(), \"<kinc_display_mode_t\\n    :x %d\\n    :y %d\\n    :width %d\\n    :height %d\\n    :pixels_per_inch %d\\n    :frequency %d\\n    :bits_per_pixel %d\\n>\\n\",
-                  ko->x, ko->y, ko->width, ko->height, ko->pixels_per_inch, ko->frequency, ko->bits_per_pixel);
-    return rep;
-}
+//static sds kinc_display_mode_t__display(s7_scheme *sc, void *value) {
+//    kinc_display_mode_t *ko = (kinc_display_mode_t *)value;
+//    sds rep = sdscatprintf(sdsempty(), \"<kinc_display_mode_t\\n    :x %d\\n    :y %d\\n    :width %d\\n    :height %d\\n    :pixels_per_inch %d\\n    :frequency %d\\n    :bits_per_pixel %d\\n>\\n\",
+//                  ko->x, ko->y, ko->width, ko->height, ko->pixels_per_inch, ko->frequency, ko->bits_per_pixel);
+//    return rep;
+//}
 
-static sds kinc_display_mode_t__display_readably(s7_scheme *sc, void *value) {
-    kinc_display_mode_t *ko = (kinc_display_mode_t *)value;
-    sds rep = sdscatprintf(sdsempty(), \"(:x %d :y %d :width %d :height %d :pixels_per_inch %d :frequency %d :bits_per_pixel %d)\",
-                  ko->x, ko->y, ko->width, ko->height, ko->pixels_per_inch, ko->frequency, ko->bits_per_pixel);
-    return rep;
-}
+//static sds kinc_display_mode_t__display_readably(s7_scheme *sc, void *value) {
+//    kinc_display_mode_t *ko = (kinc_display_mode_t *)value;
+//    sds rep = sdscatprintf(sdsempty(), \"(:x %d :y %d :width %d :height %d :pixels_per_inch %d :frequency %d :bits_per_pixel %d)\",
+//                  ko->x, ko->y, ko->width, ko->height, ko->pixels_per_inch, ko->frequency, ko->bits_per_pixel);
+//    return rep;
+//}
 
 //static s7_pointer kinc_display_mode_t__to_string(s7_scheme *sc, s7_pointer args) {
 //    s7_pointer obj, choice;

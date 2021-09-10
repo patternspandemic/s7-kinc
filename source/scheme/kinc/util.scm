@@ -12,6 +12,23 @@
           (begin (string-set! str pos #\_) (loop str))
           str))))
 
+(define (field-type->specifier field-type)
+  (case (symbol->string field-type)
+    (("int") "%d")
+    (("bool") "%d")
+    (("float") "%f")
+    (("char*") "%s")
+    (("wchar_t*") "%s")
+    (("kinc_..._t*") "????")
+    (("kinc_..._t") "????")
+    ; uint8_t *
+    ; void *
+    ; unsigned
+    ; arrays?
+    (else )
+    )
+  )
+
 ;; (define-expansion (maybe-output-name name)
 ;;   (if *s7kinc-dev-shell-detected*
 ;;       (values) ; no output-name
@@ -144,9 +161,30 @@
              ;;;(type-reverse-func (string-append)) ; TODO?
              ;;;(type-to-list-func (string-append)) ; TODO?
 
-             (type-display-func (string-append)) ; TODO
+             (type-display-func ; TODO: Use a better display format, handle fields at depth.
+              (string-append "static sds " type-str "__display(s7_scheme *sc, void *value) {\n"
+                "    sds rep = sdsnew(\"[" type-str "]\");\n"
+                "    return rep;\n"
+                "}\n"))
+              ;; (string-append "static sds " type-str "__display(s7_scheme *sc, void *value) {\n"
+              ;;   "    " type-str " *ko = (" type-str " *)value;\n"
+              ;;   "    sds rep = sdscatprintf(sdsempty(), \"<" type-str ">\\n"
+              ;;                    (format #f "~{:~A ~A\\n~}" (map (lambda(tf) (values (cadr tf) (field-type->specifier (car tf)))) type-fields)) "\",\n"
+              ;;                    (format #f "~20T~{ko->~A~^, ~}" type-names) ");\n"
+              ;;   "    return rep;\n"
+              ;;   "}\n")) ; FIXME
 
-             (type-display-readably-func (string-append)) ; TODO
+             (type-display-readably-func ; TODO: Use a better display_readably format, handle fields at depth.
+              (string-append "static sds " type-str "__display_readably(s7_scheme *sc, void *value) {\n"
+                "    sds rep = sdsnew(\"(" type-str ")\");\n"
+                "    return rep;\n"
+                "}\n"))
+              ;; (string-append "static sds " type-str "__display_readably(s7_scheme *sc, void *value) {\n"
+              ;;   "    " type-str " *ko = (" type-str " *)value;\n"
+              ;;   "    sds rep = sdscatprintf(sdsempty(), \"(:x %d :y %d :width %d :height %d :pixels_per_inch %d :frequency %d :bits_per_pixel %d)\",\n"
+              ;;   "                  ko->x, ko->y, ko->width, ko->height, ko->pixels_per_inch, ko->frequency, ko->bits_per_pixel);\n"
+              ;;   "    return rep;\n"
+              ;;   "}\n")) ; FIXME
 
              (type-to-string-func
               (string-append "static s7_pointer " type-str "__to_string(s7_scheme *sc, s7_pointer args) {\n"
