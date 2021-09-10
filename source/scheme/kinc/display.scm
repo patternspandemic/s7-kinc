@@ -31,53 +31,53 @@
       ;; Definitions and initialization for kinc_display_mode_t
       (in-C "
 
-/*static int kinc_display_mode_t_s7tag = 0;*/
+//static int kinc_display_mode_t_s7tag = 0;
 
-static s7_pointer kinc_display_mode_t__free(s7_scheme *sc, s7_pointer obj) {
-    free(s7_c_object_value(obj));
-    return(NULL);
-}
+//static s7_pointer kinc_display_mode_t__free(s7_scheme *sc, s7_pointer obj) {
+//    free(s7_c_object_value(obj));
+//    return(NULL);
+//}
 
-static s7_pointer kinc_display_mode_t__is_equal(s7_scheme *sc, s7_pointer args) {
-    s7_pointer p1, p2;
-    kinc_display_mode_t *a, *b;
-    p1 = s7_car(args);
-    p2 = s7_cadr(args);
-    if (p1 == p2)
-        return(s7_t(sc));
-    if ((!s7_is_c_object(p2)) ||
-        (s7_c_object_type(p2) != kinc_display_mode_t_s7tag))
-        return(s7_f(sc));
-    a = (kinc_display_mode_t *)s7_c_object_value(p1);
-    b = (kinc_display_mode_t *)s7_c_object_value(p2);
-    return(s7_make_boolean(sc, (a->x == b->x) &&
-                               (a->y == b->y) &&
-                               (a->width == b->width) &&
-                               (a->height == b->height) &&
-                               (a->pixels_per_inch == b->pixels_per_inch) &&
-                               (a->frequency == b->frequency) &&
-                               (a->bits_per_pixel == b->bits_per_pixel)));
-}
+//static s7_pointer kinc_display_mode_t__is_equal(s7_scheme *sc, s7_pointer args) {
+//    s7_pointer p1, p2;
+//    kinc_display_mode_t *a, *b;
+//    p1 = s7_car(args);
+//    p2 = s7_cadr(args);
+//    if (p1 == p2)
+//        return(s7_t(sc));
+//    if ((!s7_is_c_object(p2)) ||
+//        (s7_c_object_type(p2) != kinc_display_mode_t_s7tag))
+//        return(s7_f(sc));
+//    a = (kinc_display_mode_t *)s7_c_object_value(p1);
+//    b = (kinc_display_mode_t *)s7_c_object_value(p2);
+//    return(s7_make_boolean(sc, (a->x == b->x) &&
+//                               (a->y == b->y) &&
+//                               (a->width == b->width) &&
+//                               (a->height == b->height) &&
+//                               (a->pixels_per_inch == b->pixels_per_inch) &&
+//                               (a->frequency == b->frequency) &&
+//                               (a->bits_per_pixel == b->bits_per_pixel)));
+//}
 
-static s7_pointer kinc_display_mode_t__field_by_kw(s7_scheme *sc, kinc_display_mode_t *ko, s7_pointer kw) {
-    if(s7_make_keyword(sc, \"x\") == kw)
-        return s7_make_integer(sc, ko->x);
-    if(s7_make_keyword(sc, \"y\") == kw)
-        return s7_make_integer(sc, ko->y);
-    if(s7_make_keyword(sc, \"width\") == kw)
-        return s7_make_integer(sc, ko->width);
-    if(s7_make_keyword(sc, \"height\") == kw)
-        return s7_make_integer(sc, ko->height);
-    if(s7_make_keyword(sc, \"pixels_per_inch\") == kw)
-        return s7_make_integer(sc, ko->pixels_per_inch);
-    if(s7_make_keyword(sc, \"frequency\") == kw)
-        return s7_make_integer(sc, ko->frequency);
-    if(s7_make_keyword(sc, \"bits_per_pixel\") == kw)
-        return s7_make_integer(sc, ko->bits_per_pixel);
-
-    return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-ref\", 2, kw,
-        \"one of :x, :y, :width, :height, :pixels_per_inch, :frequency, :bits_per_pixel\"));
-}
+//static s7_pointer kinc_display_mode_t__field_by_kw(s7_scheme *sc, kinc_display_mode_t *ko, s7_pointer kw) {
+//    if(s7_make_keyword(sc, \"x\") == kw)
+//        return s7_make_integer(sc, ko->x);
+//    if(s7_make_keyword(sc, \"y\") == kw)
+//        return s7_make_integer(sc, ko->y);
+//    if(s7_make_keyword(sc, \"width\") == kw)
+//        return s7_make_integer(sc, ko->width);
+//    if(s7_make_keyword(sc, \"height\") == kw)
+//        return s7_make_integer(sc, ko->height);
+//    if(s7_make_keyword(sc, \"pixels_per_inch\") == kw)
+//        return s7_make_integer(sc, ko->pixels_per_inch);
+//    if(s7_make_keyword(sc, \"frequency\") == kw)
+//        return s7_make_integer(sc, ko->frequency);
+//    if(s7_make_keyword(sc, \"bits_per_pixel\") == kw)
+//        return s7_make_integer(sc, ko->bits_per_pixel);
+//
+//    return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-ref\", 2, kw,
+//        \"one of :x, :y, :width, :height, :pixels_per_inch, :frequency, :bits_per_pixel\"));
+//}
 
 static s7_pointer kinc_display_mode_t__set_field_by_kw(s7_scheme *sc, kinc_display_mode_t *ko, s7_pointer kw, s7_pointer val) {
     if (s7_make_keyword(sc, \"x\") == kw) {
@@ -127,62 +127,62 @@ static s7_pointer kinc_display_mode_t__set_field_by_kw(s7_scheme *sc, kinc_displ
         \"one of :x, :y, :width, :height, :pixels_per_inch, :frequency, :bits_per_pixel\"));
 }
 
-static s7_pointer g_kinc_display_mode_t__ref(s7_scheme *sc, s7_pointer args) {
-    #define G_KINC_DISPLAY_MODE_T__REF_HELP \"(kinc_display_mode_t-ref o f) returns field f from object o.\"
-    #define G_KINC_DISPLAY_MODE_T__REF_SIG s7_make_signature(sc, 3, s7_make_symbol(sc, \"integer?\"), s7_make_symbol(sc, \"kinc_display_mode_t?\"), s7_make_symbol(sc, \"keyword?\"))
+//static s7_pointer g_kinc_display_mode_t__ref(s7_scheme *sc, s7_pointer args) {
+//    #define G_KINC_DISPLAY_MODE_T__REF_HELP \"(kinc_display_mode_t-ref o f) returns field f from object o.\"
+//    #define G_KINC_DISPLAY_MODE_T__REF_SIG s7_make_signature(sc, 3, s7_make_symbol(sc, \"integer?\"), s7_make_symbol(sc, \"kinc_display_mode_t?\"), s7_make_symbol(sc, \"keyword?\"))
+//
+//    s7_pointer obj;
+//    s7_int obj_type;
+//    kinc_display_mode_t *ko;
+//
+//    if (s7_list_length(sc, args) != 2)
+//        return(s7_wrong_number_of_args_error(sc, \"kinc_display_mode_t-ref takes 2 arguments: ~S\", args));
+//
+//    obj = s7_car(args);
+//    obj_type = s7_c_object_type(obj);
+//    if (obj_type != kinc_display_mode_t_s7tag)
+//        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-ref\", 1, obj, \"a kinc_display_mode_t\"));
+//    ko = (kinc_display_mode_t *)s7_c_object_value(obj);
+//
+//    if (s7_is_null(sc, s7_cdr(args))) /* this is for an (obj) test */
+//        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-ref\", 1, obj, \"missing keyword arg\"));
+//
+//    s7_pointer arg = s7_cadr(args);
+//    if (s7_is_keyword(arg))
+//        return kinc_display_mode_t__field_by_kw(sc, ko, arg);
+//    else {
+//        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-ref\",
+//                                       2, arg, \"a keyword\"));
+//    }
+//}
 
-    s7_pointer obj;
-    s7_int obj_type;
-    kinc_display_mode_t *ko;
-
-    if (s7_list_length(sc, args) != 2)
-        return(s7_wrong_number_of_args_error(sc, \"kinc_display_mode_t-ref takes 2 arguments: ~S\", args));
-
-    obj = s7_car(args);
-    obj_type = s7_c_object_type(obj);
-    if (obj_type != kinc_display_mode_t_s7tag)
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-ref\", 1, obj, \"a kinc_display_mode_t\"));
-    ko = (kinc_display_mode_t *)s7_c_object_value(obj);
-
-    if (s7_is_null(sc, s7_cdr(args))) /* this is for an (obj) test */
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-ref\", 1, obj, \"missing keyword arg\"));
-
-    s7_pointer arg = s7_cadr(args);
-    if (s7_is_keyword(arg))
-        return kinc_display_mode_t__field_by_kw(sc, ko, arg);
-    else {
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-ref\",
-                                       2, arg, \"a keyword\"));
-    }
-}
-
-static s7_pointer g_kinc_display_mode_t__set(s7_scheme *sc, s7_pointer args) {
-    #define G_KINC_DISPLAY_MODE_T__SET_HELP \"(kinc_display_mode_t-set! o f v) sets field f of object o to value v.\"
-    #define G_KINC_DISPLAY_MODE_T__SET_SIG s7_make_signature(sc, 4, s7_make_symbol(sc, \"integer?\"), s7_make_symbol(sc, \"kinc_display_mode_t?\"), s7_make_symbol(sc, \"keyword?\"), s7_make_symbol(sc, \"integer?\"))
-
-    s7_pointer obj, kw;
-    s7_int obj_type;
-    kinc_display_mode_t *ko;
-
-    if (s7_list_length(sc, args) != 3)
-        return(s7_wrong_number_of_args_error(sc, \"kinc_display_mode_t-set! takes 3 arguments: ~S\", args));
-
-    obj = s7_car(args);
-    obj_type = s7_c_object_type(obj);
-
-    if (s7_is_immutable(obj))
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a >>mutable<< kinc_display_mode_t\"));
-
-    if (obj_type != kinc_display_mode_t_s7tag)
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a kinc_display_mode_t\"));
-
-    kw = s7_cadr(args);
-    if (!s7_is_keyword(kw))
-        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 2, kw, \"a keyword\"));
-
-    ko = (kinc_display_mode_t *)s7_c_object_value(obj);
-    return kinc_display_mode_t__set_field_by_kw(sc, ko, kw, s7_caddr(args));
-}
+//static s7_pointer g_kinc_display_mode_t__set(s7_scheme *sc, s7_pointer args) {
+//    #define G_KINC_DISPLAY_MODE_T__SET_HELP \"(kinc_display_mode_t-set! o f v) sets field f of object o to value v.\"
+//    #define G_KINC_DISPLAY_MODE_T__SET_SIG s7_make_signature(sc, 4, s7_make_symbol(sc, \"integer?\"), s7_make_symbol(sc, \"kinc_display_mode_t?\"), s7_make_symbol(sc, \"keyword?\"), s7_make_symbol(sc, \"integer?\"))
+//
+//    s7_pointer obj, kw;
+//    s7_int obj_type;
+//    kinc_display_mode_t *ko;
+//
+//    if (s7_list_length(sc, args) != 3)
+//        return(s7_wrong_number_of_args_error(sc, \"kinc_display_mode_t-set! takes 3 arguments: ~S\", args));
+//
+//    obj = s7_car(args);
+//    obj_type = s7_c_object_type(obj);
+//
+//    if (s7_is_immutable(obj))
+//        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a >>mutable<< kinc_display_mode_t\"));
+//
+//    if (obj_type != kinc_display_mode_t_s7tag)
+//        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 1, obj, \"a kinc_display_mode_t\"));
+//
+//    kw = s7_cadr(args);
+//    if (!s7_is_keyword(kw))
+//        return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 2, kw, \"a keyword\"));
+//
+//    ko = (kinc_display_mode_t *)s7_c_object_value(obj);
+//    return kinc_display_mode_t__set_field_by_kw(sc, ko, kw, s7_caddr(args));
+//}
 
 static sds kinc_display_mode_t__display(s7_scheme *sc, void *value) {
     kinc_display_mode_t *ko = (kinc_display_mode_t *)value;
@@ -198,30 +198,30 @@ static sds kinc_display_mode_t__display_readably(s7_scheme *sc, void *value) {
     return rep;
 }
 
-static s7_pointer kinc_display_mode_t__to_string(s7_scheme *sc, s7_pointer args) {
-    s7_pointer obj, choice;
-    sds str_rep;
+//static s7_pointer kinc_display_mode_t__to_string(s7_scheme *sc, s7_pointer args) {
+//    s7_pointer obj, choice;
+//    sds str_rep;
+//
+//    obj = s7_car(args);
+//    if (s7_is_pair(s7_cdr(args)))
+//        choice = s7_cadr(args);
+//    else choice = s7_t(sc);
+//
+//    if (choice == s7_make_keyword(sc, \"readable\"))
+//        str_rep = kinc_display_mode_t__display_readably(sc, s7_c_object_value(obj));
+//    else str_rep = kinc_display_mode_t__display(sc, s7_c_object_value(obj));
+//
+//    obj = s7_make_string(sc, str_rep);
+//
+//    sdsfree(str_rep);
+//    return(obj);
+//}
 
-    obj = s7_car(args);
-    if (s7_is_pair(s7_cdr(args)))
-        choice = s7_cadr(args);
-    else choice = s7_t(sc);
-
-    if (choice == s7_make_keyword(sc, \"readable\"))
-        str_rep = kinc_display_mode_t__display_readably(sc, s7_c_object_value(obj));
-    else str_rep = kinc_display_mode_t__display(sc, s7_c_object_value(obj));
-
-    obj = s7_make_string(sc, str_rep);
-
-    sdsfree(str_rep);
-    return(obj);
-}
-
-static s7_pointer g_kinc_display_mode_t__is(s7_scheme *sc, s7_pointer args) {
-    #define G_KINC_DISPLAY_MODE_T__IS_HELP \"(kinc_display_mode_t? obj) returns #t if obj is a kinc_display_mode_t.\"
-    #define G_KINC_DISPLAY_MODE_T__IS_SIG s7_make_signature(sc, 2, s7_make_symbol(sc, \"boolean?\"), s7_t(sc))
-    return(s7_make_boolean(sc, s7_c_object_type(s7_car(args)) == kinc_display_mode_t_s7tag));
-}
+//static s7_pointer g_kinc_display_mode_t__is(s7_scheme *sc, s7_pointer args) {
+//    #define G_KINC_DISPLAY_MODE_T__IS_HELP \"(kinc_display_mode_t? obj) returns #t if obj is a kinc_display_mode_t.\"
+//    #define G_KINC_DISPLAY_MODE_T__IS_SIG s7_make_signature(sc, 2, s7_make_symbol(sc, \"boolean?\"), s7_t(sc))
+//    return(s7_make_boolean(sc, s7_c_object_type(s7_car(args)) == kinc_display_mode_t_s7tag));
+//}
 
 static s7_pointer g_kinc_display_mode_t__make(s7_scheme *sc, s7_pointer args) {
     #define G_KINC_DISPLAY_MODE_T__MAKE_HELP \"(make-kinc_display_mode_t) returns a new kinc_display_mode_t.\"
