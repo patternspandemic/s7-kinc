@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc display
-    :ctypes '((kinc_display_mode_t
+    :ctypes ((kinc_display_mode_t
                (int x)
                (int y)
                (int width)
@@ -20,7 +20,7 @@
                (int frequency)
                (int bits_per_pixel)))
 
-    :c-info '(
+    :c-info (
        (void kinc_display_init (void))
         (int kinc_primary_display (void))
         (int kinc_count_displays (void))
@@ -31,7 +31,7 @@
       ;; Definitions and initialization for kinc_display_mode_t
       (in-C "
 
-static int kinc_display_mode_t_s7tag = 0;
+/*static int kinc_display_mode_t_s7tag = 0;*/
 
 static s7_pointer kinc_display_mode_t__free(s7_scheme *sc, s7_pointer obj) {
     free(s7_c_object_value(obj));
@@ -269,6 +269,7 @@ static s7_pointer g_kinc_display_mode_t__make(s7_scheme *sc, s7_pointer args) {
     return(s7_ko);
 }
 
+/*
 static void configure_kinc_display_mode_t(s7_scheme *sc) {
     kinc_display_mode_t_s7tag = s7_make_c_type(sc, \"<kinc_display_mode_t>\");
     s7_define_safe_function_star(sc, \"make-kinc_display_mode_t\", g_kinc_display_mode_t__make, MAKE_KINC_DISPLAY_MODE_T__ARGLIST, G_KINC_DISPLAY_MODE_T__MAKE_HELP);
@@ -292,6 +293,7 @@ static void configure_kinc_display_mode_t(s7_scheme *sc) {
 
     // kinc_display_mode_t, from keywords or symbols or an environment. Define outside c-define?
 }
+*/
 
 ") ;; end kinc_display_mode_t
 
@@ -349,7 +351,7 @@ static s7_pointer g_kinc_display_available_mode(s7_scheme *sc, s7_pointer args) 
       (C-function ("kinc_display_current_mode" g_kinc_display_current_mode "kinc_display_mode_t kinc_display_current_mode(int)" 1))
       (C-function ("kinc_display_available_mode" g_kinc_display_available_mode "kinc_display_mode_t kinc_display_available_mode(int int)" 2))
 
-      (C-init "configure_kinc_display_mode_t(sc);")
+      ;; (C-init "configure_kinc_display_mode_t(sc);")
 
     )
   )
