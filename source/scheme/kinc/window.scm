@@ -20,7 +20,8 @@
                (int samples_per_pixel))
 
               (kinc_window_options_t
-               ((symbol "const char*") title)
+               ;; ((symbol "const char*") title)
+               (char* title)
                (int x)
                (int y)
                (int width)
@@ -28,7 +29,7 @@
                (int display_index)
                (bool visible)
                (int window_features)
-               (kinc_window_mode_t mode)))
+               ((enum kinc_window_mode_t) mode)))
 
     :c-info '(
       (C-macro (int (KINC_WINDOW_FEATURE_RESIZEABLE
@@ -37,9 +38,9 @@
                      KINC_WINDOW_FEATURE_BORDERLESS
                      KINC_WINDOW_FEATURE_ON_TOP)))
 
-      (int (KINC_WINDOW_MODE_WINDOW
-            KINC_WINDOW_MODE_FULLSCREEN
-            KINC_WINDOW_MODE_EXCLUSIVE_FULLSCREEN))
+      ((kinc_window_mode_t int) (KINC_WINDOW_MODE_WINDOW
+                                 KINC_WINDOW_MODE_FULLSCREEN
+                                 KINC_WINDOW_MODE_EXCLUSIVE_FULLSCREEN))
 
                           (void kinc_window_destroy (int))
                            (int kinc_count_windows (void))

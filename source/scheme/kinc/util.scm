@@ -12,22 +12,45 @@
           (begin (string-set! str pos #\_) (loop str))
           str))))
 
-(define (field-type->specifier field-type)
-  (case (symbol->string field-type)
-    (("int") "%d")
-    (("bool") "%d")
-    (("float") "%f")
-    (("char*") "%s")
-    (("wchar_t*") "%s")
-    (("kinc_..._t*") "????")
-    (("kinc_..._t") "????")
-    ; uint8_t *
-    ; void *
-    ; unsigned
-    ; arrays?
-    (else )
-    )
-  )
+
+
+;; NOTE: C --> s7 --> C
+;;       How to get specific preceision out of mp types?
+;; ====================================
+;; int,(enum kinc_*_t) -> s7_make_integer     -> s7_integer     -> int64_t
+;; unsigned,uint64_t   -> s7_make_big_integer -> s7_big_integer -> mpz_t*
+
+;; float -> s7_make_real     -> s7_real     -> double
+;;       -> s7_make_big_real -> s7_big_real -> mpfr_t*
+
+;; bool  -> s7_make_boolean -> s7_boolean -> bool
+
+;; char* -> s7_make_string -> s7_string -> char*
+;;       -> s7_make_string_wrapper ->
+;;       -> s7_make_permanent_string ->
+
+;; (struct kinc_*_t) -> s7_make_c_object              -> s7_c_object_value        -> void*
+;; void*    -> s7_make_c_pointer[_with_type] -> s7_c_pointer[_with_type] -> void*
+
+
+
+;; FIXME
+;; (define (field-type->specifier field-type)
+;;   (case (symbol->string field-type)
+;;     (("int") "%d")
+;;     (("bool") "%d")
+;;     (("float") "%f")
+;;     (("char*") "%s")
+;;     (("wchar_t*") "%s")
+;;     (("kinc_..._t*") "????")
+;;     (("kinc_..._t") "????")
+;;     ; uint8_t *
+;;     ; void *
+;;     ; unsigned
+;;     ; arrays?
+;;     (else )
+;;     )
+;;   )
 
 ;; (define-expansion (maybe-output-name name)
 ;;   (if *s7kinc-dev-shell-detected*
@@ -87,6 +110,7 @@
 
              ;;;(type-equivalent-func (string-append)) ; TODO?
 
+             ; FIXME: Types need to be considered!
              (type-field-by-kw-func
               (string-append "static s7_pointer " type-str "__field_by_kw(s7_scheme *sc, " type-str " *ko, s7_pointer kw) {\n"
                 (format #f "~{~4Tif(s7_make_keyword(sc, \"~A\") == kw)~%~8Treturn s7_make_integer(sc, ko->~A);~^~%~}\n\n" (map (lambda (n) (values n n)) type-names))
@@ -94,7 +118,60 @@
                 "        \"one of " (format #f "~{:~A~^, ~}" type-names) "\"));\n"
                 "}\n"))
 
-             (type-set-field-by-kw-func (string-append)) ; TODO
+             ; TODO:
+             (type-set-field-by-kw-func
+              (string-append "static s7_pointer " type-str "__set_field_by_kw(s7_scheme *sc, " type-str " *ko, s7_pointer kw, s7_pointer val) {\n"
+
+                "    if (s7_make_keyword(sc, \"x\") == kw) {\n"
+                "        if (!s7_is_integer(val))\n"
+                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
+                "        ko->x = s7_integer(val);\n"
+                "        return val;\n"
+                "    }\n"
+
+
+
+                "    if (s7_make_keyword(sc, \"y\") == kw) {\n"
+                "        if (!s7_is_integer(val))\n"
+                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
+                "        ko->y = s7_integer(val);\n"
+                "        return val;\n"
+                "    }\n"
+                "    if (s7_make_keyword(sc, \"width\") == kw) {\n"
+                "        if (!s7_is_integer(val))\n"
+                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
+                "        ko->width = s7_integer(val);\n"
+                "        return val;\n"
+                "    }\n"
+                "    if (s7_make_keyword(sc, \"height\") == kw) {\n"
+                "        if (!s7_is_integer(val))\n"
+                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
+                "        ko->height = s7_integer(val);\n"
+                "        return val;\n"
+                "    }\n"
+                "    if (s7_make_keyword(sc, \"pixels_per_inch\") == kw) {\n"
+                "        if (!s7_is_integer(val))\n"
+                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
+                "        ko->pixels_per_inch = s7_integer(val);\n"
+                "        return val;\n"
+                "    }\n"
+                "    if (s7_make_keyword(sc, \"frequency\") == kw) {\n"
+                "        if (!s7_is_integer(val))\n"
+                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
+                "        ko->frequency = s7_integer(val);\n"
+                "        return val;\n"
+                "    }\n"
+                "    if (s7_make_keyword(sc, \"bits_per_pixel\") == kw) {\n"
+                "        if (!s7_is_integer(val))\n"
+                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
+                "        ko->bits_per_pixel = s7_integer(val);\n"
+                "        return val;\n"
+                "    }\n"
+
+                "\n"
+                "    return(s7_wrong_type_arg_error(sc, \"" type-str "-set!\", 2, kw,\n"
+                "        \"one of " (format #f "~{:~A~^, ~}" type-names) "\"));\n"
+                "}\n"))
 
              (type-ref-func
               (string-append "static s7_pointer g_" type-str "__ref(s7_scheme *sc, s7_pointer args) {\n"

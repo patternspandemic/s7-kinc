@@ -15,9 +15,9 @@
                (int width)
                (int height)
                (int depth)
-               (kinc_image_format_t format)
+               ((enum kinc_image_format_t) format)
                (unsigned internal_format)
-               (kinc_image_compression_t compression)
+               ((enum kinc_image_compression_t) compression)
                (void* data)
                (int data_size))
 
@@ -31,19 +31,19 @@
               )
 
     :c-info '(
-      (int (KINC_IMAGE_COMPRESSION_NONE
-            KINC_IMAGE_COMPRESSION_DXT5
-            KINC_IMAGE_COMPRESSION_ASTC
-            KINC_IMAGE_COMPRESSION_PVRTC))
+      ((kinc_image_compression_t int) (KINC_IMAGE_COMPRESSION_NONE
+                                       KINC_IMAGE_COMPRESSION_DXT5
+                                       KINC_IMAGE_COMPRESSION_ASTC
+                                       KINC_IMAGE_COMPRESSION_PVRTC))
 
-      (int (KINC_IMAGE_FORMAT_RGBA32
-            KINC_IMAGE_FORMAT_GREY8
-            KINC_IMAGE_FORMAT_RGB24
-            KINC_IMAGE_FORMAT_RGBA128
-            KINC_IMAGE_FORMAT_RGBA64
-            KINC_IMAGE_FORMAT_A32
-            KINC_IMAGE_FORMAT_BGRA32
-            KINC_IMAGE_FORMAT_A16))
+      ((kinc_image_format_t int) (KINC_IMAGE_FORMAT_RGBA32
+                                  KINC_IMAGE_FORMAT_GREY8
+                                  KINC_IMAGE_FORMAT_RGB24
+                                  KINC_IMAGE_FORMAT_RGBA128
+                                  KINC_IMAGE_FORMAT_RGBA64
+                                  KINC_IMAGE_FORMAT_A32
+                                  KINC_IMAGE_FORMAT_BGRA32
+                                  KINC_IMAGE_FORMAT_A16))
 
       (size_t kinc_image_size_from_file (char*))
       (size_t kinc_image_size_from_encoded_bytes (void* size_t char*))
