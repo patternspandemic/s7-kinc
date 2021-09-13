@@ -1,3 +1,5 @@
+# Allow configurable INITIAL_HEAP_SIZE and other compile-time defaults.
+
 { stdenv, lib, cpio
 
 # Core dependencies:
@@ -39,7 +41,7 @@ let
   # TODO: Add library switches for the lib*.scm so dep libs are included.
   # These files will be included in the output, and accessible via *load-path*.
   s7SchemeFiles = [
-    #"case"
+    "case"
     "cload"
     "debug"
     #"json"

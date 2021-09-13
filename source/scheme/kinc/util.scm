@@ -13,15 +13,14 @@
           str))))
 
 
-
 ;; NOTE: C --> s7 --> C
 ;;       How to get specific preceision out of mp types?
 ;; ====================================
 ;; int,(enum kinc_*_t) -> s7_make_integer     -> s7_integer     -> int64_t
 ;; unsigned,uint64_t   -> s7_make_big_integer -> s7_big_integer -> mpz_t*
 
-;; float -> s7_make_real     -> s7_real     -> double
-;;       -> s7_make_big_real -> s7_big_real -> mpfr_t*
+;; float,double -> s7_make_real     -> s7_real     -> double
+;;              -> s7_make_big_real -> s7_big_real -> mpfr_t*
 
 ;; bool  -> s7_make_boolean -> s7_boolean -> bool
 
@@ -31,8 +30,20 @@
 
 ;; (struct kinc_*_t) -> s7_make_c_object              -> s7_c_object_value        -> void*
 ;; void*    -> s7_make_c_pointer[_with_type] -> s7_c_pointer[_with_type] -> void*
-
-
+(define (field-type->make-func field-type)
+  (case* field-type
+         ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
+         ; TODO: Handle arrays as pointers ? Maybe Treat them as applicable objects! Also arrays of pointers.. How s7 vectors fit in?
+         ((int (enum #<>) int16_t uint8_t uint16_t uint32_t) 's7_make_integer)
+         ((float double) 's7_make_real)
+         ((bool) 's7_make_boolean)
+         ((char*) 's7_make_string)
+         ((unsigned kinc_ticks_t uint64_t) 's7_make_big_integer) ; TODO Confirm & add others
+        ;((...) 's7_make_big_real) ; TODO: Confirm & add others
+         (((struct #<>)) 's7_make_c_object) ; TODO: Will also need to lookup the s7tag at runtime (see system)
+         ((void*) 's7_make_c_pointer)
+         ; TODO: Function pointers possible?
+         (else 'make_function_not_supported))) ; TODO: Error instead? (rather than in C)
 
 ;; FIXME
 ;; (define (field-type->specifier field-type)
@@ -110,10 +121,19 @@
 
              ;;;(type-equivalent-func (string-append)) ; TODO?
 
-             ; FIXME: Types need to be considered!
+             ; FIXME: Work in progress.
+             ;        - Make work with struct types, require s7tag lookup (see system)
              (type-field-by-kw-func
               (string-append "static s7_pointer " type-str "__field_by_kw(s7_scheme *sc, " type-str " *ko, s7_pointer kw) {\n"
-                (format #f "~{~4Tif(s7_make_keyword(sc, \"~A\") == kw)~%~8Treturn s7_make_integer(sc, ko->~A);~^~%~}\n\n" (map (lambda (n) (values n n)) type-names))
+             ;; (format #f "~{~4Tif(s7_make_keyword(sc, \"~A\") == kw)~%~8Treturn s7_make_integer(sc, ko->~A);~^~%~}\n\n" (map (lambda (n) (values n n)) type-names))
+
+                (format #f "~{~4Tif(s7_make_keyword(sc, \"~A\") == kw)~%~8Treturn ~A(sc, ko->~A);~^~%~}\n\n"
+                        (map (lambda (tf)
+                               (let ((name (cadr tf))
+                                     (make-func (field-type->make-func (car tf))))
+                                 (values name make-func name)))
+                             type-fields))
+
                 "    return(s7_wrong_type_arg_error(sc, \"" type-str "-ref\", 2, kw,\n"
                 "        \"one of " (format #f "~{:~A~^, ~}" type-names) "\"));\n"
                 "}\n"))
