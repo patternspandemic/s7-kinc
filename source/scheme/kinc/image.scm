@@ -11,26 +11,26 @@
 (with-let (unlet)
 
   (bind-kinc image
-    :ctypes '((kinc_image_t
-               (int width)
-               (int height)
-               (int depth)
-               ((enum kinc_image_format_t) format)
-               (unsigned internal_format)
-               ((enum kinc_image_compression_t) compression)
-               (void* data)
-               (int data_size))
+    :ctypes ((kinc_image_t
+              (int width)
+              (int height)
+              (int depth)
+              ((enum kinc_image_format_t) format)
+              (unsigned internal_format)
+              ((enum kinc_image_compression_t) compression)
+              (void* data)
+              (int data_size))
 
               ;; TODO: Probably just use 'in-C'
-              ;; (kinc_image_read_callbacks_t
-              ;; //int(* read )(void *user_data, void *data, size_t size)
-              ;; //void(* seek )(void *user_data, int pos)
-              ;; //int(* pos )(void *user_data)
-              ;; //size_t(* size )(void *user_data)
-              ;; )
-              )
+             ;; (kinc_image_read_callbacks_t
+             ;;  //int(* read )(void *user_data, void *data, size_t size)
+             ;;  //void(* seek )(void *user_data, int pos)
+             ;;  //int(* pos )(void *user_data)
+             ;;  //size_t(* size )(void *user_data)
+             ;;  )
+            )
 
-    :c-info '(
+    :c-info (
       ((kinc_image_compression_t int) (KINC_IMAGE_COMPRESSION_NONE
                                        KINC_IMAGE_COMPRESSION_DXT5
                                        KINC_IMAGE_COMPRESSION_ASTC

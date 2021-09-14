@@ -11,27 +11,27 @@
 (with-let (unlet)
 
   (bind-kinc window
-    :ctypes '((kinc_framebuffer_options_t
-               (int frequency)
-               (bool vertical_sync)
-               (int color_bits)
-               (int depth_bits)
-               (int stencil_bits)
-               (int samples_per_pixel))
+    :ctypes ((kinc_framebuffer_options_t
+              (int frequency)
+              (bool vertical_sync)
+              (int color_bits)
+              (int depth_bits)
+              (int stencil_bits)
+              (int samples_per_pixel))
 
-              (kinc_window_options_t
-               ;; ((symbol "const char*") title)
-               (char* title)
-               (int x)
-               (int y)
-               (int width)
-               (int height)
-               (int display_index)
-               (bool visible)
-               (int window_features)
-               ((enum kinc_window_mode_t) mode)))
+             (kinc_window_options_t
+              ;; ((symbol "const char*") title)
+              (char* title)
+              (int x)
+              (int y)
+              (int width)
+              (int height)
+              (int display_index)
+              (bool visible)
+              (int window_features)
+              ((enum kinc_window_mode_t) mode)))
 
-    :c-info '(
+    :c-info (
       (C-macro (int (KINC_WINDOW_FEATURE_RESIZEABLE
                      KINC_WINDOW_FEATURE_MINIMIZABLE
                      KINC_WINDOW_FEATURE_MAXIMIZABLE

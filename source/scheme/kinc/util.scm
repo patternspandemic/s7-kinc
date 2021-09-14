@@ -2,6 +2,11 @@
 ;;;
 ;;; Helpers for binding kinc items with cload.
 
+;(provide 'kinc/util)
+
+(require 'case.scm)
+
+
 (define *s7kinc-dev-shell-detected*
   (string=? "1" (getenv "S7KINC_DEV_SHELL")))
 
@@ -122,18 +127,15 @@
              ;;;(type-equivalent-func (string-append)) ; TODO?
 
              ; FIXME: Work in progress.
-             ;        - Make work with struct types, require s7tag lookup (see system)
+             ;        - Make work with struct types, requires s7tag lookup (see system)
              (type-field-by-kw-func
               (string-append "static s7_pointer " type-str "__field_by_kw(s7_scheme *sc, " type-str " *ko, s7_pointer kw) {\n"
-             ;; (format #f "~{~4Tif(s7_make_keyword(sc, \"~A\") == kw)~%~8Treturn s7_make_integer(sc, ko->~A);~^~%~}\n\n" (map (lambda (n) (values n n)) type-names))
-
-                (format #f "~{~4Tif(s7_make_keyword(sc, \"~A\") == kw)~%~8Treturn ~A(sc, ko->~A);~^~%~}\n\n"
+                (format #f "~{~5Tif(s7_make_keyword(sc, \"~A\") == kw)~%~9Treturn ~A(sc, ko->~A);~^~%~}\n\n"
                         (map (lambda (tf)
                                (let ((name (cadr tf))
                                      (make-func (field-type->make-func (car tf))))
                                  (values name make-func name)))
                              type-fields))
-
                 "    return(s7_wrong_type_arg_error(sc, \"" type-str "-ref\", 2, kw,\n"
                 "        \"one of " (format #f "~{:~A~^, ~}" type-names) "\"));\n"
                 "}\n"))

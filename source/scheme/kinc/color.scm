@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc color
-    :c-info '(
+    :c-info (
       (C-macro (uint32_t (KINC_COLOR_BLACK
                           KINC_COLOR_WHITE
                           KINC_COLOR_RED

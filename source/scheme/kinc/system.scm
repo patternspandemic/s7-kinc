@@ -12,7 +12,7 @@
 
   (bind-kinc system
     :headers ("kinc/window.h")
-    :c-info '(
+    :c-info (
                         (char* kinc_application_name (void))
                          (void kinc_set_application_name (char*))
                           (int kinc_width (void))
