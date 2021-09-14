@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc image
-    :ctypes ((kinc_image_t
+    :ctypes ((kinc_image_t ; TODO: Add field defaults
               (int width)
               (int height)
               (int depth)
@@ -21,7 +21,7 @@
               (void* data)
               (int data_size))
 
-              ;; TODO: Probably just use 'in-C'
+              ;; TODO: Probably just use local 'in-C'
              ;; (kinc_image_read_callbacks_t
              ;;  //int(* read )(void *user_data, void *data, size_t size)
              ;;  //void(* seek )(void *user_data, int pos)

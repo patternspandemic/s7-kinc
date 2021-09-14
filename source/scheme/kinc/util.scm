@@ -7,6 +7,19 @@
 (require 'case.scm)
 
 
+;; From stuff.scm
+(define iota
+  (let ((+documentation+ "(iota n (start 0) (incr 1)) returns a list counting from start for n: (iota 3) -> '(0 1 2)"))
+    (lambda* (n (start 0) (incr 1))
+             (if (or (not (integer? n))
+                     (< n 0))
+                 (error 'wrong-type-arg "iota length ~A should be a non-negative integer" n))
+             (let ((lst (make-list n)))
+               (do ((p lst (cdr p))
+                    (i start (+ i incr)))
+                   ((null? p) lst)
+                 (set! (car p) i))))))
+
 (define *s7kinc-dev-shell-detected*
   (string=? "1" (getenv "S7KINC_DEV_SHELL")))
 
@@ -35,6 +48,7 @@
 
 ;; (struct kinc_*_t) -> s7_make_c_object              -> s7_c_object_value        -> void*
 ;; void*    -> s7_make_c_pointer[_with_type] -> s7_c_pointer[_with_type] -> void*
+
 (define (field-type->make-func field-type)
   (case* field-type
          ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
@@ -49,6 +63,51 @@
          ((void*) 's7_make_c_pointer)
          ; TODO: Function pointers possible?
          (else 'make_function_not_supported))) ; TODO: Error instead? (rather than in C)
+
+(define (field-type->test-func field-type)
+  (case* field-type
+         ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
+         ; TODO: Handle arrays as pointers ? Maybe Treat them as applicable objects! Also arrays of pointers.. How s7 vectors fit in?
+         ((int (enum #<>) int16_t uint8_t uint16_t uint32_t) 's7_is_integer)
+         ((float double) 's7_is_real)
+         ((bool) 's7_is_boolean)
+         ((char*) 's7_is_string)
+         ((unsigned kinc_ticks_t uint64_t) 's7_is_integer) ; TODO Confirm & add others
+        ;((...) 's7_is_real) ; TODO: Confirm & add others
+         (((struct #<>)) 's7_is_c_object) ; TODO: Will also need to lookup the s7tag at runtime (see system)
+         ((void*) 's7_is_c_pointer)
+         ; TODO: Function pointers possible?
+         (else 'test_function_not_supported))) ; TODO: Error instead? (rather than in C)
+
+(define (field-type->expected-str field-type)
+  (case* field-type
+         ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
+         ; TODO: Handle arrays as pointers ? Maybe Treat them as applicable objects! Also arrays of pointers.. How s7 vectors fit in?
+         ((int (enum #<>) int16_t uint8_t uint16_t uint32_t) "an integer")
+         ((float double) "a real")
+         ((bool) "a boolean")
+         ((char*) "a string")
+         ((unsigned kinc_ticks_t uint64_t) "an integer") ; TODO Confirm & add others
+        ;((...) "a real") ; TODO: Confirm & add others
+         (((struct #<>)) "an s7 C object") ; TODO: Will also need to lookup the s7tag at runtime (see system)
+         ((void*) "an s7 C pointer")
+         ; TODO: Function pointers possible?
+         (else "expected string not supported"))) ; TODO: Error instead? (rather than in C)
+
+(define (scheme-type->field-type-func field-type)
+  (case* field-type
+         ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
+         ; TODO: Handle arrays as pointers ? Maybe Treat them as applicable objects! Also arrays of pointers.. How s7 vectors fit in?
+         ((int (enum #<>) int16_t uint8_t uint16_t uint32_t) 's7_integer)
+         ((float double) 's7_real)
+         ((bool) 's7_boolean)
+         ((char*) 's7_string)
+         ((unsigned kinc_ticks_t uint64_t) 's7_big_integer) ; TODO: Confirm & add others FIXME: Requires further mpz_t* -> C type
+        ;((...) "a real") ; TODO: Confirm & add others FIXME: Requires further mpfr_t* -> C type
+         (((struct #<>)) 's7_c_object_value) ; TODO: Will also need to lookup the s7tag at runtime (see system) FIXME: Needs cast from void*
+         ((void*) 's7_c_pointer) ; FIXME: Needs cast from void*
+         ; TODO: Function pointers possible?
+         (else 'field_type_function_not_supported))) ; TODO: Error instead? (rather than in C)
 
 ;; FIXME
 ;; (define (field-type->specifier field-type)
@@ -67,15 +126,6 @@
 ;;     (else )
 ;;     )
 ;;   )
-
-;; (define-expansion (maybe-output-name name)
-;;   (if *s7kinc-dev-shell-detected*
-;;       (values) ; no output-name
-;;       (let ((output-name-string (string-append
-;;                                  "kinc_"
-;;                                  (slashed-symbol->underscored-string name)
-;;                                  "_s7")))
-;;         output-name-string)))
 
 (define-expansion* (bind-kinc lib-sym (prefix "") (headers ()) (cflags "") (ldflags "") (ctypes ()) (c-info ()))
   (let* ((lib-str (symbol->string lib-sym))
@@ -130,7 +180,7 @@
              ;        - Make work with struct types, requires s7tag lookup (see system)
              (type-field-by-kw-func
               (string-append "static s7_pointer " type-str "__field_by_kw(s7_scheme *sc, " type-str " *ko, s7_pointer kw) {\n"
-                (format #f "~{~5Tif(s7_make_keyword(sc, \"~A\") == kw)~%~9Treturn ~A(sc, ko->~A);~^~%~}\n\n"
+                (format #f "~{~5Tif (s7_make_keyword(sc, \"~A\") == kw)~%~9Treturn ~A(sc, ko->~A);~^~%~}\n\n"
                         (map (lambda (tf)
                                (let ((name (cadr tf))
                                      (make-func (field-type->make-func (car tf))))
@@ -140,57 +190,18 @@
                 "        \"one of " (format #f "~{:~A~^, ~}" type-names) "\"));\n"
                 "}\n"))
 
-             ; TODO:
+             ; FIXME: Work in progress.
+             ;        - Make work with struct types, requires s7tag lookup (see system)
              (type-set-field-by-kw-func
               (string-append "static s7_pointer " type-str "__set_field_by_kw(s7_scheme *sc, " type-str " *ko, s7_pointer kw, s7_pointer val) {\n"
-
-                "    if (s7_make_keyword(sc, \"x\") == kw) {\n"
-                "        if (!s7_is_integer(val))\n"
-                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
-                "        ko->x = s7_integer(val);\n"
-                "        return val;\n"
-                "    }\n"
-
-
-
-                "    if (s7_make_keyword(sc, \"y\") == kw) {\n"
-                "        if (!s7_is_integer(val))\n"
-                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
-                "        ko->y = s7_integer(val);\n"
-                "        return val;\n"
-                "    }\n"
-                "    if (s7_make_keyword(sc, \"width\") == kw) {\n"
-                "        if (!s7_is_integer(val))\n"
-                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
-                "        ko->width = s7_integer(val);\n"
-                "        return val;\n"
-                "    }\n"
-                "    if (s7_make_keyword(sc, \"height\") == kw) {\n"
-                "        if (!s7_is_integer(val))\n"
-                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
-                "        ko->height = s7_integer(val);\n"
-                "        return val;\n"
-                "    }\n"
-                "    if (s7_make_keyword(sc, \"pixels_per_inch\") == kw) {\n"
-                "        if (!s7_is_integer(val))\n"
-                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
-                "        ko->pixels_per_inch = s7_integer(val);\n"
-                "        return val;\n"
-                "    }\n"
-                "    if (s7_make_keyword(sc, \"frequency\") == kw) {\n"
-                "        if (!s7_is_integer(val))\n"
-                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
-                "        ko->frequency = s7_integer(val);\n"
-                "        return val;\n"
-                "    }\n"
-                "    if (s7_make_keyword(sc, \"bits_per_pixel\") == kw) {\n"
-                "        if (!s7_is_integer(val))\n"
-                "            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));\n"
-                "        ko->bits_per_pixel = s7_integer(val);\n"
-                "        return val;\n"
-                "    }\n"
-
-                "\n"
+                (format #f "~{~5Tif (s7_make_keyword(sc, \"~A\") == kw) {~%~9Tif (!~A(val))~%~13Treturn(s7_wrong_type_arg_error(sc, \"~A-set!\", 3, val, \"~A\"));~%~9Tko->~A = ~A(val);~%~9Treturn val;~%~5T}~%~}\n"
+                        (map (lambda (tf)
+                               (let ((name (cadr tf))
+                                     (type-test-func (field-type->test-func (car tf)))
+                                     (expected-type-str (field-type->expected-str (car tf)))
+                                     (unmake-func (scheme-type->field-type-func (car tf))))
+                                 (values name type-test-func type-str expected-type-str name unmake-func)))
+                             type-fields))
                 "    return(s7_wrong_type_arg_error(sc, \"" type-str "-set!\", 2, kw,\n"
                 "        \"one of " (format #f "~{:~A~^, ~}" type-names) "\"));\n"
                 "}\n"))
@@ -312,7 +323,28 @@
                 "    return(s7_make_boolean(sc, s7_c_object_type(s7_car(args)) == " type-tag-str "));\n"
                 "}\n"))
 
-             (type-make-func (string-append)) ; TODO
+             ; FIXME: Work in progress.
+             ;        - Make work with struct types, requires s7tag lookup (see system)
+             (type-make-func
+              (string-append "static s7_pointer g_" type-str "__make(s7_scheme *sc, s7_pointer args) {\n"
+                "    #define G_" type-str-cap "__MAKE_HELP \"(make-" type-str ") returns a new " type-str ".\"\n"
+                "    #define MAKE_" type-str-cap "__ARGLIST \"" (format #f "~{(~A ~A)~^ ~}" (map (lambda (tf) (values (cadr tf) (caddr tf))) type-fields)) "\"\n"
+                "\n"
+                "    " type-str " *ko = (" type-str " *)calloc(1, sizeof(" type-str "));\n"
+                "\n"
+                "    s7_pointer arg;\n"
+                "\n"
+                (format #f "~{~5Targ = s7_list_ref(sc, args, ~D); // ~A~%~5Tif (!~A(arg))~%~9Treturn(s7_wrong_type_arg_error(sc, \"make-~A\", ~D, arg, \"~A\"));~%~5Tko->~A = ~A(arg);~%~%~}\n"
+                        (map (lambda (arg-i tf)
+                               (let ((name (cadr tf))
+                                     (type-test-func (field-type->test-func (car tf)))
+                                     (expected-type-str (field-type->expected-str (car tf)))
+                                     (unmake-func (scheme-type->field-type-func (car tf))))
+                                 (values arg-i name type-test-func type-str arg-i expected-type-str name unmake-func)))
+                             (iota (length type-fields)) type-fields))
+                "    s7_pointer s7_ko = s7_make_c_object(sc, " type-tag-str ", (void *)ko);\n"
+                "    return(s7_ko);\n"
+                "}\n"))
 
              (type-config-func
               (string-append "static void configure_" type-str "(s7_scheme *sc) {\n"

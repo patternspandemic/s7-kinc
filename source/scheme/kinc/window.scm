@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc window
-    :ctypes ((kinc_framebuffer_options_t
+    :ctypes ((kinc_framebuffer_options_t ; TODO: Add field defaults
               (int frequency)
               (bool vertical_sync)
               (int color_bits)
@@ -19,8 +19,7 @@
               (int stencil_bits)
               (int samples_per_pixel))
 
-             (kinc_window_options_t
-              ;; ((symbol "const char*") title)
+             (kinc_window_options_t ; TODO: Add field defaults
               (char* title)
               (int x)
               (int y)

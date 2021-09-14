@@ -12,13 +12,13 @@
 
   (bind-kinc display
     :ctypes ((kinc_display_mode_t
-               (int x)
-               (int y)
-               (int width)
-               (int height)
-               (int pixels_per_inch)
-               (int frequency)
-               (int bits_per_pixel)))
+               (int x 0)
+               (int y 0)
+               (int width 0)
+               (int height 0)
+               (int pixels_per_inch 0)
+               (int frequency 0)
+               (int bits_per_pixel 0)))
 
     :c-info (
        (void kinc_display_init (void))
@@ -27,7 +27,7 @@
        (bool kinc_display_available (int))
       (char* kinc_display_name (int))
         (int kinc_display_count_available_modes (int))
-
+#|
       ;; Definitions and initialization for kinc_display_mode_t
       (in-C "
 
@@ -79,53 +79,53 @@
 //        \"one of :x, :y, :width, :height, :pixels_per_inch, :frequency, :bits_per_pixel\"));
 //}
 
-static s7_pointer kinc_display_mode_t__set_field_by_kw(s7_scheme *sc, kinc_display_mode_t *ko, s7_pointer kw, s7_pointer val) {
-    if (s7_make_keyword(sc, \"x\") == kw) {
-        if (!s7_is_integer(val))
-            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
-        ko->x = s7_integer(val);
-        return val;
-    }
-    if (s7_make_keyword(sc, \"y\") == kw) {
-        if (!s7_is_integer(val))
-            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
-        ko->y = s7_integer(val);
-        return val;
-    }
-    if (s7_make_keyword(sc, \"width\") == kw) {
-        if (!s7_is_integer(val))
-            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
-        ko->width = s7_integer(val);
-        return val;
-    }
-    if (s7_make_keyword(sc, \"height\") == kw) {
-        if (!s7_is_integer(val))
-            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
-        ko->height = s7_integer(val);
-        return val;
-    }
-    if (s7_make_keyword(sc, \"pixels_per_inch\") == kw) {
-        if (!s7_is_integer(val))
-            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
-        ko->pixels_per_inch = s7_integer(val);
-        return val;
-    }
-    if (s7_make_keyword(sc, \"frequency\") == kw) {
-        if (!s7_is_integer(val))
-            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
-        ko->frequency = s7_integer(val);
-        return val;
-    }
-    if (s7_make_keyword(sc, \"bits_per_pixel\") == kw) {
-        if (!s7_is_integer(val))
-            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
-        ko->bits_per_pixel = s7_integer(val);
-        return val;
-    }
-
-    return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 2, kw,
-        \"one of :x, :y, :width, :height, :pixels_per_inch, :frequency, :bits_per_pixel\"));
-}
+//static s7_pointer kinc_display_mode_t__set_field_by_kw(s7_scheme *sc, kinc_display_mode_t *ko, s7_pointer kw, s7_pointer val) {
+//    if (s7_make_keyword(sc, \"x\") == kw) {
+//        if (!s7_is_integer(val))
+//            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
+//        ko->x = s7_integer(val);
+//        return val;
+//    }
+//    if (s7_make_keyword(sc, \"y\") == kw) {
+//        if (!s7_is_integer(val))
+//            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
+//        ko->y = s7_integer(val);
+//        return val;
+//    }
+//    if (s7_make_keyword(sc, \"width\") == kw) {
+//        if (!s7_is_integer(val))
+//            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
+//        ko->width = s7_integer(val);
+//        return val;
+//    }
+//    if (s7_make_keyword(sc, \"height\") == kw) {
+//        if (!s7_is_integer(val))
+//            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
+//        ko->height = s7_integer(val);
+//        return val;
+//    }
+//    if (s7_make_keyword(sc, \"pixels_per_inch\") == kw) {
+//        if (!s7_is_integer(val))
+//            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
+//        ko->pixels_per_inch = s7_integer(val);
+//        return val;
+//    }
+//    if (s7_make_keyword(sc, \"frequency\") == kw) {
+//        if (!s7_is_integer(val))
+//            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
+//        ko->frequency = s7_integer(val);
+//        return val;
+//    }
+//    if (s7_make_keyword(sc, \"bits_per_pixel\") == kw) {
+//        if (!s7_is_integer(val))
+//            return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 3, val, \"an integer\"));
+//        ko->bits_per_pixel = s7_integer(val);
+//        return val;
+//    }
+//
+//    return(s7_wrong_type_arg_error(sc, \"kinc_display_mode_t-set!\", 2, kw,
+//        \"one of :x, :y, :width, :height, :pixels_per_inch, :frequency, :bits_per_pixel\"));
+//}
 
 //static s7_pointer g_kinc_display_mode_t__ref(s7_scheme *sc, s7_pointer args) {
 //    #define G_KINC_DISPLAY_MODE_T__REF_HELP \"(kinc_display_mode_t-ref o f) returns field f from object o.\"
@@ -223,51 +223,51 @@ static s7_pointer kinc_display_mode_t__set_field_by_kw(s7_scheme *sc, kinc_displ
 //    return(s7_make_boolean(sc, s7_c_object_type(s7_car(args)) == kinc_display_mode_t_s7tag));
 //}
 
-static s7_pointer g_kinc_display_mode_t__make(s7_scheme *sc, s7_pointer args) {
-    #define G_KINC_DISPLAY_MODE_T__MAKE_HELP \"(make-kinc_display_mode_t) returns a new kinc_display_mode_t.\"
-    #define MAKE_KINC_DISPLAY_MODE_T__ARGLIST \"(x 0) (y 0) (width 0) (height 0) (pixels_per_inch 0) (frequency 0) (bits_per_pixel 0)\"
-    kinc_display_mode_t *ko = (kinc_display_mode_t *)calloc(1, sizeof(kinc_display_mode_t));
-
-    s7_pointer arg;
-
-    arg = s7_list_ref(sc, args, 0); // x
-    if(!s7_is_integer(arg))
-        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 0, arg, \"an integer\"));
-    ko->x = s7_integer(arg);
-
-    arg = s7_list_ref(sc, args, 1); // y
-    if(!s7_is_integer(arg))
-        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 1, arg, \"an integer\"));
-    ko->y = s7_integer(arg);
-
-    arg = s7_list_ref(sc, args, 2); // width
-    if(!s7_is_integer(arg))
-        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 2, arg, \"an integer\"));
-    ko->width = s7_integer(arg);
-
-    arg = s7_list_ref(sc, args, 3); // height
-    if(!s7_is_integer(arg))
-        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 3, arg, \"an integer\"));
-    ko->height = s7_integer(arg);
-
-    arg = s7_list_ref(sc, args, 4); // pixels_per_inch
-    if(!s7_is_integer(arg))
-        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 4, arg, \"an integer\"));
-    ko->pixels_per_inch = s7_integer(arg);
-
-    arg = s7_list_ref(sc, args, 5); // frequency
-    if(!s7_is_integer(arg))
-        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 5, arg, \"an integer\"));
-    ko->frequency = s7_integer(arg);
-
-    arg = s7_list_ref(sc, args, 6); // bits_per_pixel
-    if(!s7_is_integer(arg))
-        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 6, arg, \"an integer\"));
-    ko->bits_per_pixel = s7_integer(arg);
-
-    s7_pointer s7_ko = s7_make_c_object(sc, kinc_display_mode_t_s7tag, (void *)ko);
-    return(s7_ko);
-}
+//static s7_pointer g_kinc_display_mode_t__make(s7_scheme *sc, s7_pointer args) {
+//    #define G_KINC_DISPLAY_MODE_T__MAKE_HELP \"(make-kinc_display_mode_t) returns a new kinc_display_mode_t.\"
+//    #define MAKE_KINC_DISPLAY_MODE_T__ARGLIST \"(x 0) (y 0) (width 0) (height 0) (pixels_per_inch 0) (frequency 0) (bits_per_pixel 0)\"
+//    kinc_display_mode_t *ko = (kinc_display_mode_t *)calloc(1, sizeof(kinc_display_mode_t));
+//
+//    s7_pointer arg;
+//
+//    arg = s7_list_ref(sc, args, 0); // x
+//    if(!s7_is_integer(arg))
+//        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 0, arg, \"an integer\"));
+//    ko->x = s7_integer(arg);
+//
+//    arg = s7_list_ref(sc, args, 1); // y
+//    if(!s7_is_integer(arg))
+//        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 1, arg, \"an integer\"));
+//    ko->y = s7_integer(arg);
+//
+//    arg = s7_list_ref(sc, args, 2); // width
+//    if(!s7_is_integer(arg))
+//        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 2, arg, \"an integer\"));
+//    ko->width = s7_integer(arg);
+//
+//    arg = s7_list_ref(sc, args, 3); // height
+//    if(!s7_is_integer(arg))
+//        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 3, arg, \"an integer\"));
+//    ko->height = s7_integer(arg);
+//
+//    arg = s7_list_ref(sc, args, 4); // pixels_per_inch
+//    if(!s7_is_integer(arg))
+//        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 4, arg, \"an integer\"));
+//    ko->pixels_per_inch = s7_integer(arg);
+//
+//    arg = s7_list_ref(sc, args, 5); // frequency
+//    if(!s7_is_integer(arg))
+//        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 5, arg, \"an integer\"));
+//    ko->frequency = s7_integer(arg);
+//
+//    arg = s7_list_ref(sc, args, 6); // bits_per_pixel
+//    if(!s7_is_integer(arg))
+//        return(s7_wrong_type_arg_error(sc, \"make-kinc_display_mode_t\", 6, arg, \"an integer\"));
+//    ko->bits_per_pixel = s7_integer(arg);
+//
+//    s7_pointer s7_ko = s7_make_c_object(sc, kinc_display_mode_t_s7tag, (void *)ko);
+//    return(s7_ko);
+//}
 
 /*
 static void configure_kinc_display_mode_t(s7_scheme *sc) {
@@ -296,6 +296,7 @@ static void configure_kinc_display_mode_t(s7_scheme *sc) {
 */
 
 ") ;; end kinc_display_mode_t
+|#
 
       ;; Functions requiring special C-object conversion
       (in-C "
