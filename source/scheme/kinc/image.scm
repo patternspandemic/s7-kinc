@@ -12,14 +12,14 @@
 
   (bind-kinc image
     :ctypes ((kinc_image_t ; TODO: Add field defaults
-              (int width)
-              (int height)
-              (int depth)
-              ((enum kinc_image_format_t) format)
-              (unsigned internal_format)
-              ((enum kinc_image_compression_t) compression)
-              (void* data)
-              (int data_size))
+              (int width 0)
+              (int height 0)
+              (int depth 0)
+              ((enum kinc_image_format_t) format 0)
+              (unsigned internal_format 0)
+              ((enum kinc_image_compression_t) compression 0)
+              (void* data 0)
+              (int data_size 0))
 
               ;; TODO: Probably just use local 'in-C'
              ;; (kinc_image_read_callbacks_t
@@ -61,9 +61,9 @@
 
         ;(size_t kinc_image_init (kinc_image_t* void* int int kinc_image_format_t))
         ;(size_t kinc_image_init3d (kinc_image_t* void* int int int kinc_image_format_t))
-        ;(size_t kinc_image_size_from_callbacks (kinc_image_read_callbacks_t void* char*))
+;        ;(size_t kinc_image_size_from_callbacks (kinc_image_read_callbacks_t void* char*))
         ;(size_t kinc_image_init_from_file (kinc_image_t* void* char*))
-        ;(size_t kinc_image_init_from_callbacks (kinc_image_t* void* kinc_image_read_callbacks_t void* char*))
+;        ;(size_t kinc_image_init_from_callbacks (kinc_image_t* void* kinc_image_read_callbacks_t void* char*))
         ;(size_t kinc_image_init_from_encoded_bytes (kinc_image_t* void* void* size_t char*))
           ;(void kinc_image_init_from_bytes (kinc_image_t* void* int int kinc_image_format_t))
           ;(void kinc_image_init_from_bytes3d (kinc_image_t* void* int int int kinc_image_format_t))

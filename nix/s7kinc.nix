@@ -103,7 +103,7 @@ EOF
       cp --no-clobber ${s7}/s7/{${concatStringsSep "," s7SchemeFiles}}.scm ./lib/s7/
 
       # Build the s7-kinc program.
-      gcc -o ${binName} main.c s7kinc/core.c s7kinc/repl.c lib/sds/sds.c lib/s7/s7.c -O2 -g -Wl,-export-dynamic -ldl -lm ${lib.optionalString withGmp gmpLdOpts} -lKinc
+      gcc -o ${binName} main.c s7kinc/core.c s7kinc/repl.c lib/sds/sds.c lib/util/s7ctypes.c lib/s7/s7.c -O2 -g -Wl,-export-dynamic -ldl -lm ${lib.optionalString withGmp gmpLdOpts} -lKinc
 
       # Use s7i to pre-compile shared libraries for included lib/s7/lib*.scm
       pushd lib/s7/
@@ -113,11 +113,12 @@ EOF
       done
       popd
 
-      # Do the same for the s7kinc bindings. Make sure to use the cload from
+      # Do the same for the s7kinc bindings. Make sure to use the files from
       # lib/s7 in case of override. The s7 header is required due to the
-      # generated .c file using "s7.h" over "<s7.h>".
+      # generated .c file using "s7.h" over "<s7.h>". TODO: Investigate why *.scm
+      # are needed to be copied for loads to work.
       pushd scheme/kinc/
-      cp ../../lib/s7/{cload.scm,s7.h} .
+      cp ../../lib/s7/{cload.scm,case.scm,libc.scm,s7.h} .
       find . -type f -name "*.scm" -exec ${s7}/bin/s7i '{}' \;
       popd
 

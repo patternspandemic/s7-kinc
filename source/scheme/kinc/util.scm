@@ -7,6 +7,9 @@
 (require 'case.scm)
 
 
+;; TODO: - String assignments to fields need to be copied or gc-protected, as do other *fields.
+
+
 ;; From stuff.scm
 (define iota
   (let ((+documentation+ "(iota n (start 0) (incr 1)) returns a list counting from start for n: (iota 3) -> '(0 1 2)"))
@@ -49,16 +52,17 @@
 ;; (struct kinc_*_t) -> s7_make_c_object              -> s7_c_object_value        -> void*
 ;; void*    -> s7_make_c_pointer[_with_type] -> s7_c_pointer[_with_type] -> void*
 
+; These functions require an s7_scheme arg
+(define funcs-that-need-sc '(s7_boolean))
+
 (define (field-type->make-func field-type)
   (case* field-type
          ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
          ; TODO: Handle arrays as pointers ? Maybe Treat them as applicable objects! Also arrays of pointers.. How s7 vectors fit in?
-         ((int (enum #<>) int16_t uint8_t uint16_t uint32_t) 's7_make_integer)
+         ((int (enum #<>) unsigned int16_t uint8_t uint16_t uint32_t) 's7_make_integer)
          ((float double) 's7_make_real)
          ((bool) 's7_make_boolean)
          ((char*) 's7_make_string)
-         ((unsigned kinc_ticks_t uint64_t) 's7_make_big_integer) ; TODO Confirm & add others
-        ;((...) 's7_make_big_real) ; TODO: Confirm & add others
          (((struct #<>)) 's7_make_c_object) ; TODO: Will also need to lookup the s7tag at runtime (see system)
          ((void*) 's7_make_c_pointer)
          ; TODO: Function pointers possible?
@@ -68,12 +72,10 @@
   (case* field-type
          ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
          ; TODO: Handle arrays as pointers ? Maybe Treat them as applicable objects! Also arrays of pointers.. How s7 vectors fit in?
-         ((int (enum #<>) int16_t uint8_t uint16_t uint32_t) 's7_is_integer)
+         ((int (enum #<>) unsigned int16_t uint8_t uint16_t uint32_t) 's7_is_integer)
          ((float double) 's7_is_real)
          ((bool) 's7_is_boolean)
          ((char*) 's7_is_string)
-         ((unsigned kinc_ticks_t uint64_t) 's7_is_integer) ; TODO Confirm & add others
-        ;((...) 's7_is_real) ; TODO: Confirm & add others
          (((struct #<>)) 's7_is_c_object) ; TODO: Will also need to lookup the s7tag at runtime (see system)
          ((void*) 's7_is_c_pointer)
          ; TODO: Function pointers possible?
@@ -83,12 +85,10 @@
   (case* field-type
          ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
          ; TODO: Handle arrays as pointers ? Maybe Treat them as applicable objects! Also arrays of pointers.. How s7 vectors fit in?
-         ((int (enum #<>) int16_t uint8_t uint16_t uint32_t) "an integer")
+         ((int (enum #<>) unsigned int16_t uint8_t uint16_t uint32_t) "an integer")
          ((float double) "a real")
          ((bool) "a boolean")
          ((char*) "a string")
-         ((unsigned kinc_ticks_t uint64_t) "an integer") ; TODO Confirm & add others
-        ;((...) "a real") ; TODO: Confirm & add others
          (((struct #<>)) "an s7 C object") ; TODO: Will also need to lookup the s7tag at runtime (see system)
          ((void*) "an s7 C pointer")
          ; TODO: Function pointers possible?
@@ -98,12 +98,10 @@
   (case* field-type
          ; TODO: Handle pointer versions ? int16_t*,  uint8_t*
          ; TODO: Handle arrays as pointers ? Maybe Treat them as applicable objects! Also arrays of pointers.. How s7 vectors fit in?
-         ((int (enum #<>) int16_t uint8_t uint16_t uint32_t) 's7_integer)
+         ((int (enum #<>) unsigned int16_t uint8_t uint16_t uint32_t) 's7_integer)
          ((float double) 's7_real)
          ((bool) 's7_boolean)
          ((char*) 's7_string)
-         ((unsigned kinc_ticks_t uint64_t) 's7_big_integer) ; TODO: Confirm & add others FIXME: Requires further mpz_t* -> C type
-        ;((...) "a real") ; TODO: Confirm & add others FIXME: Requires further mpfr_t* -> C type
          (((struct #<>)) 's7_c_object_value) ; TODO: Will also need to lookup the s7tag at runtime (see system) FIXME: Needs cast from void*
          ((void*) 's7_c_pointer) ; FIXME: Needs cast from void*
          ; TODO: Function pointers possible?
@@ -130,9 +128,9 @@
 (define-expansion* (bind-kinc lib-sym (prefix "") (headers ()) (cflags "") (ldflags "") (ctypes ()) (c-info ()))
   (let* ((lib-str (symbol->string lib-sym))
          (lib-hdr (string-append "kinc/" lib-str ".h"))
-         (lib-headers (append (list "sds/sds.h" lib-hdr) headers))
+         (lib-headers (append (list "sds/sds.h" "util/s7ctypes.h" lib-hdr) headers))
          (lib-include-path (if (provided? 'kinc.scm) "-Isource/lib/" "-I../../lib/"))
-         (lib-cflags (string-append lib-include-path " " cflags))
+         (lib-cflags (string-append lib-include-path " -DWITH_GMP " cflags))
          (lib-ldflags (string-append "-lKinc " ldflags))
          (lib-output-name (string-append "kinc_" (slashed-symbol->underscored-string lib-sym) "_s7"))
          (ctypes-c '())
@@ -150,6 +148,7 @@
              ; Declarations and functions
              (type-tag-decl (string-append "static int " type-tag-str " = 0;\n"))
 
+             ; FIXME: This needs to free member fields as well depending on type. I.e. kinc_type_t*, char*, etc.
              (type-free-func
               (string-append "static s7_pointer " type-str "__free(s7_scheme *sc, s7_pointer obj) {\n"
                 "    free(s7_c_object_value(obj));\n"
@@ -178,6 +177,7 @@
 
              ; FIXME: Work in progress.
              ;        - Make work with struct types, requires s7tag lookup (see system)
+             ;        - Struct type members should be copied c* -> s7_make_c_object ?
              (type-field-by-kw-func
               (string-append "static s7_pointer " type-str "__field_by_kw(s7_scheme *sc, " type-str " *ko, s7_pointer kw) {\n"
                 (format #f "~{~5Tif (s7_make_keyword(sc, \"~A\") == kw)~%~9Treturn ~A(sc, ko->~A);~^~%~}\n\n"
@@ -192,15 +192,17 @@
 
              ; FIXME: Work in progress.
              ;        - Make work with struct types, requires s7tag lookup (see system)
+             ;        - Struct type members should be copied s7_c_object_values -> malloc ?
              (type-set-field-by-kw-func
               (string-append "static s7_pointer " type-str "__set_field_by_kw(s7_scheme *sc, " type-str " *ko, s7_pointer kw, s7_pointer val) {\n"
-                (format #f "~{~5Tif (s7_make_keyword(sc, \"~A\") == kw) {~%~9Tif (!~A(val))~%~13Treturn(s7_wrong_type_arg_error(sc, \"~A-set!\", 3, val, \"~A\"));~%~9Tko->~A = ~A(val);~%~9Treturn val;~%~5T}~%~}\n"
+                (format #f "~{~5Tif (s7_make_keyword(sc, \"~A\") == kw) {~%~9Tif (!~A(val))~%~13Treturn(s7_wrong_type_arg_error(sc, \"~A-set!\", 3, val, \"~A\"));~%~9Tko->~A = ~A(~Aval);~%~9Treturn val;~%~5T}~%~}\n"
                         (map (lambda (tf)
-                               (let ((name (cadr tf))
-                                     (type-test-func (field-type->test-func (car tf)))
-                                     (expected-type-str (field-type->expected-str (car tf)))
-                                     (unmake-func (scheme-type->field-type-func (car tf))))
-                                 (values name type-test-func type-str expected-type-str name unmake-func)))
+                               (let* ((name (cadr tf))
+                                      (type-test-func (field-type->test-func (car tf)))
+                                      (expected-type-str (field-type->expected-str (car tf)))
+                                      (unmake-func (scheme-type->field-type-func (car tf)))
+                                      (maybe-sc (if (member unmake-func funcs-that-need-sc) "sc," "")))
+                                 (values name type-test-func type-str expected-type-str name unmake-func maybe-sc)))
                              type-fields))
                 "    return(s7_wrong_type_arg_error(sc, \"" type-str "-set!\", 2, kw,\n"
                 "        \"one of " (format #f "~{:~A~^, ~}" type-names) "\"));\n"
@@ -334,13 +336,14 @@
                 "\n"
                 "    s7_pointer arg;\n"
                 "\n"
-                (format #f "~{~5Targ = s7_list_ref(sc, args, ~D); // ~A~%~5Tif (!~A(arg))~%~9Treturn(s7_wrong_type_arg_error(sc, \"make-~A\", ~D, arg, \"~A\"));~%~5Tko->~A = ~A(arg);~%~%~}\n"
+                (format #f "~{~5Targ = s7_list_ref(sc, args, ~D); // ~A~%~5Tif (!~A(arg))~%~9Treturn(s7_wrong_type_arg_error(sc, \"make-~A\", ~D, arg, \"~A\"));~%~5Tko->~A = ~A(~Aarg);~%~%~}\n"
                         (map (lambda (arg-i tf)
-                               (let ((name (cadr tf))
-                                     (type-test-func (field-type->test-func (car tf)))
-                                     (expected-type-str (field-type->expected-str (car tf)))
-                                     (unmake-func (scheme-type->field-type-func (car tf))))
-                                 (values arg-i name type-test-func type-str arg-i expected-type-str name unmake-func)))
+                               (let* ((name (cadr tf))
+                                      (type-test-func (field-type->test-func (car tf)))
+                                      (expected-type-str (field-type->expected-str (car tf)))
+                                      (unmake-func (scheme-type->field-type-func (car tf)))
+                                      (maybe-sc (if (member unmake-func funcs-that-need-sc) "sc," "")))
+                                 (values arg-i name type-test-func type-str arg-i expected-type-str name unmake-func maybe-sc)))
                              (iota (length type-fields)) type-fields))
                 "    s7_pointer s7_ko = s7_make_c_object(sc, " type-tag-str ", (void *)ko);\n"
                 "    return(s7_ko);\n"

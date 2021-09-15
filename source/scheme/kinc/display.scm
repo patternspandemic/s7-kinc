@@ -351,9 +351,6 @@ static s7_pointer g_kinc_display_available_mode(s7_scheme *sc, s7_pointer args) 
 
       (C-function ("kinc_display_current_mode" g_kinc_display_current_mode "kinc_display_mode_t kinc_display_current_mode(int)" 1))
       (C-function ("kinc_display_available_mode" g_kinc_display_available_mode "kinc_display_mode_t kinc_display_available_mode(int int)" 2))
-
-      ;; (C-init "configure_kinc_display_mode_t(sc);")
-
     )
   )
 
