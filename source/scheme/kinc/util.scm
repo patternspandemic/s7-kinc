@@ -130,7 +130,7 @@
          (lib-hdr (string-append "kinc/" lib-str ".h"))
          (lib-headers (append (list "sds/sds.h" "util/s7ctypes.h" lib-hdr) headers))
          (lib-include-path (if (provided? 'kinc.scm) "-Isource/lib/" "-I../../lib/"))
-         (lib-cflags (string-append lib-include-path " -DWITH_GMP " cflags))
+         (lib-cflags (string-append lib-include-path " " cflags))
          (lib-ldflags (string-append "-lKinc " ldflags))
          (lib-output-name (string-append "kinc_" (slashed-symbol->underscored-string lib-sym) "_s7"))
          (ctypes-c '())
