@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
   s7kinc_init();
 
   /* Initialize Kinc */
-  kinc_init("s7 Kinc", 720, 480, NULL, NULL);
-  kinc_start();
+  /* kinc_init("s7 Kinc", 720, 480, NULL, NULL); */
+  /* kinc_start(); */
   return 0;
 }

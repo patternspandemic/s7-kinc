@@ -62,6 +62,7 @@
 //    return(type);
 //}
 
+// TODO: Allow nil: (), to be passed as window/framebuffer opts, a NULL passed in C.
 static s7_pointer g_kinc_init(s7_scheme *sc, s7_pointer args) {
     s7_pointer p, name, width, height, wo, fo;
     s7_int obj_type, wo_s7tag, fo_s7tag;

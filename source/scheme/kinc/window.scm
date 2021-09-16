@@ -20,7 +20,7 @@
               (int samples_per_pixel 1))
 
              (kinc_window_options_t
-              (char* title "")
+              (char* title "s7-kinc")
               (int x -1)
               (int y -1)
               (int width 800)

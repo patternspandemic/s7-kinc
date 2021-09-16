@@ -226,12 +226,12 @@ void s7kinc_init(void) {
   make_hooks();
   set_callbacks();
 
+  /* TODO: Temporary */
+  s7_define_function(sc, "change-color", change_color, 1, 0, false, "(change-color color) change the clear color");
+
   /* Initialize autoloads to Kinc s7 shared library bindings. */
   load_scm(sc, "kinc.scm");
 
   /* Load the main driver. */
   load_scm(sc, "main.scm");
-
-  /* TODO: Temporary */
-  s7_define_function(sc, "change-color", change_color, 1, 0, false, "(change-color color) change the clear color");
 }
