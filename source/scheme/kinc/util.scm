@@ -330,7 +330,7 @@
              (type-make-func
               (string-append "static s7_pointer g_" type-str "__make(s7_scheme *sc, s7_pointer args) {\n"
                 "    #define G_" type-str-cap "__MAKE_HELP \"(make-" type-str ") returns a new " type-str ".\"\n"
-                "    #define MAKE_" type-str-cap "__ARGLIST \"" (format #f "~{(~A ~A)~^ ~}" (map (lambda (tf) (values (cadr tf) (caddr tf))) type-fields)) "\"\n"
+                "    #define MAKE_" type-str-cap "__ARGLIST \"" (format #f "~{(~A ~A~A~A)~^ ~}" (map (lambda (tf) (values (cadr tf) (if (string? (caddr tf)) "\\\"" "") (caddr tf) (if (string? (caddr tf)) "\\\"" ""))) type-fields)) "\"\n"
                 "\n"
                 "    " type-str " *ko = (" type-str " *)calloc(1, sizeof(" type-str "));\n"
                 "\n"

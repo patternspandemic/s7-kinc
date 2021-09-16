@@ -234,4 +234,23 @@ void s7kinc_init(void) {
 
   /* Load the main driver. */
   load_scm(sc, "main.scm");
+
+  /* Required definitions if main.scm didn't take care of them. */
+  s7_eval_c_string(sc, "(unless (defined? 'application-name) (define application-name \"s7 Kinc Default\"))");
+  s7_eval_c_string(sc, "(unless (member 'window (map (lambda(p) (car p)) (let->list *libkinc*))) (require 'kinc/window))");
+  s7_eval_c_string(sc, "(unless (defined? 'framebuffer-options) (define framebuffer-options (with-let (*libkinc* 'window) (make-kinc_framebuffer_options_t))))");
+  s7_eval_c_string(sc, "(unless (defined? 'window-options) (define window-options (with-let (*libkinc* 'window) (make-kinc_window_options_t :title application-name))))");
+
+  s7_pointer name, framebuffer_opts, window_opts;
+  name = s7_eval_c_string(sc, "application-name");
+  framebuffer_opts = s7_eval_c_string(sc, "framebuffer-options");
+  window_opts = s7_eval_c_string(sc, "window-options");
+
+  // TODO: error when name, framebuffer_opts, or window_opts are wrong types.
+
+  /* Initialize and start Kinc */
+  kinc_window_options_t *wo = s7_c_object_value(window_opts);
+  kinc_framebuffer_options_t *fo = s7_c_object_value(framebuffer_opts);
+  kinc_init(s7_string(name), wo->width, wo->height, wo, fo);
+  kinc_start();
 }
