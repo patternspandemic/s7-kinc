@@ -17,6 +17,7 @@ Work in Progress, not usable by others.
     - [ ] Developer shell environment vars
       + [ ] S7KINC_DEV_SHELL
       + [ ] S7KINC_DEV_ROOT
+  + [ ] main.scm and special defines, hooks, etc.
   + [ ] Examples
 
 *** Progress of Application
@@ -33,7 +34,8 @@ Work in Progress, not usable by others.
     - [X] development build with shell / load-paths overridden
 
 **** Some Notes
-- Prebuilt shared libs for kinc bindings seem to work, but themselves are not linked to needed sds functions. Seems not to be a problem as they're found when loaded into the main application.
+- Prebuilt shared libs for kinc bindings seem to work, but themselves are not linked to some needed functions (sds, s7ctypes). Seems not to be a problem as they're found when loaded into the main application.
+- While bindings for kinc_init and kinc_start work, the main loop is kept on the C side to avoid scheme-side errors halting the loop (which occurs when it's started on the scheme side). This way the REPL remains useful.
 
 *** Progress of Bindings
 
