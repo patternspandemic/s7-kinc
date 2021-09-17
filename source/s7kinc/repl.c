@@ -19,43 +19,72 @@ static void handle_client_input(const char *str) {
   wrapped[0] = '\0'; sdsupdatelen(wrapped); // truncate the wrapping buffer
   wrapped = sdscatprintf(wrapped, "(begin %s)", input_buffer); // wrap the current input_buffer
 
+  int gc_loc_err, gc_loc_out;
+  gc_loc_err = gc_loc_out = -1;
+
   /* Attempt to read the wrapped input to see if its a valid form. */
-  int gc_loc = -1;
   s7_pointer form_port = s7_open_input_string(sc, wrapped);
   s7_pointer err = s7_open_output_string(sc);
   s7_pointer err_prev = s7_set_current_error_port(sc, err);
-  gc_loc = s7_gc_protect(sc, err_prev);
-  s7_pointer form = s7_read(sc, form_port); // outputs to err port when not valid
+  gc_loc_err = s7_gc_protect(sc, err_prev);
+  s7_pointer form = s7_read(sc, form_port); // outputs to err when not valid
   s7_close_input_port(sc, form_port);
-  s7_set_current_error_port(sc, err_prev); // restore prev error port
-  if(gc_loc != -1) {
-    s7_gc_unprotect_at(sc, gc_loc);
-    gc_loc  = -1;
-  }
   const char *err_msg = s7_get_output_string(sc, err);
-  s7_close_output_port(sc, err);
+
+  /* If there was err output, form is invalid. */
   if((err_msg) && (*err_msg)) {
+    s7_set_current_error_port(sc, err_prev); // restore prev error port
+    s7_close_output_port(sc, err);
+    if(gc_loc_err != -1) {
+      s7_gc_unprotect_at(sc, gc_loc_err);
+      gc_loc_err  = -1;
+    }
     return; // invalid form
   } else {
     clear_input_buffer(); // so we don't reevaluate what we're about to evaluate
-    /* Evaluate the form. */
-    // TODO: Also capture std err to send with result back to repl
+
+    /* Evaluate the form ... */
+
+    /*     Capture out */
     s7_pointer out = s7_open_output_string(sc);
     s7_pointer out_prev = s7_set_current_output_port(sc, out);
-    gc_loc = s7_gc_protect(sc, out_prev);
-    s7_pointer eval_result = s7_eval(sc, form, s7_nil(sc)); // evaluation!
-    char *result_str = s7_object_to_c_string(sc, eval_result); // free this!
-    const char *out_msg = s7_get_output_string(sc, out);
-    s7_close_output_port(sc, out);
-    s7_set_current_output_port(sc, out_prev);
-    if(gc_loc != -1) {
-      s7_gc_unprotect_at(sc, gc_loc);
-      gc_loc  = -1;
+    gc_loc_out = s7_gc_protect(sc, out_prev);
+
+    /*     Capture err
+     *     - `err` port still set from form read above. */
+
+    /*     Evaluation! */
+    s7_pointer eval_result = s7_eval(sc, form, s7_nil(sc));
+    char *eval_result_str = s7_object_to_c_string(sc, eval_result); // free this!
+    const char *out_msg = s7_get_output_string(sc, out); // When form writes to current out port.
+    err_msg = s7_get_output_string(sc, err); // When the form errors.
+
+    /*     Client reply */
+    sds reply;
+    if ((err_msg) && (*err_msg)) {
+      reply = sdscatprintf(sdsempty(), "%s> ", err_msg);
+    } else {
+      reply = sdscatprintf(sdsempty(), "%s%s\n\n> ", out_msg, eval_result_str); // output before result before prompt
     }
-    sds result = sdscatprintf(sdsempty(), "%s\n%s\n> ", out_msg, result_str);
-    kinc_socket_send_connected(&client, result, sdslen(result));
-    free(result_str);
-    sdsfree(result);
+    kinc_socket_send_connected(&client, reply, sdslen(reply)); // send the reply
+
+    /*     Port cleanup */
+    s7_set_current_output_port(sc, out_prev);
+    s7_close_output_port(sc, out);
+    if(gc_loc_out != -1) {
+      s7_gc_unprotect_at(sc, gc_loc_out);
+      gc_loc_out  = -1;
+    }
+    s7_set_current_error_port(sc, err_prev);
+    s7_close_output_port(sc, err);
+    if(gc_loc_err != -1) {
+      s7_gc_unprotect_at(sc, gc_loc_err);
+      gc_loc_err  = -1;
+    }
+
+    /* String cleanup */
+    free(eval_result_str);
+    sdsfree(reply);
   }
 }
 

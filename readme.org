@@ -25,7 +25,7 @@ Work in Progress, not usable by others.
 - [-] s7-kinc
   + [X] embed s7 interpreter
   + [X] allow access to the interpreter via a socket server
-  + [ ] redirect s7's stderr out to socket clients
+  + [X] redirect s7's stderr out to socket clients
   + [ ] organize logging
   + [X] get .so reloads to work.
     Done, but existing objects are still tied to previously loaded c-functions. New c-objects use newly loaded so.
