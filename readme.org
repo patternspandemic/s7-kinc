@@ -45,9 +45,9 @@ Work in Progress, not usable by others.
   + [ ] error
   + [-] image
   + [ ] log
-  + [-] system
+  + [X] system
   + [ ] video
-  + [-] window
+  + [X] window
   + [ ] audio1
     - [ ] audio
     - [ ] sound

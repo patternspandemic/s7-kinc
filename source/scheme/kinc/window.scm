@@ -1,4 +1,4 @@
-;;; TODO: window.scm
+;;; window.scm
 ;;;
 ;;; kinc/window.h
 
