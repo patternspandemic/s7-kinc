@@ -10,6 +10,7 @@
 (define kinc-libs
   '(color
     display
+    graphics1
     image
     system
     window))

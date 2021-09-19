@@ -24,6 +24,9 @@ static s7_pointer logout_hook;
 static s7_pointer resize_hook;
 static s7_pointer ppi_changed_hook;
 
+/* TODO: Assets Handling */
+//static sds assets_dir;
+
 
 /* TODO: Temporary */
 static s7_pointer change_color(s7_scheme *sc, s7_pointer args) {
@@ -208,11 +211,15 @@ void s7kinc_init(void) {
       sds test = sdscatprintf(sdsempty(), "(directory? \"%s\")", dev_root);
       if(s7_boolean(sc, s7_eval_c_string(sc, test))) {
         add_dev_load_paths(dev_root);
+//        assets_dir = sdscatprintf(sdsempty(), "%s%s", dev_root, "/assets");
+//        kinc_internal_set_files_location(assets_dir);
       }
       sdsfree(test);
     } else { /* Use current working dir as the dev root. */
       char *cwd = getcwd(NULL, 0);
       add_dev_load_paths(cwd);
+//      assets_dir = sdscatprintf(sdsempty(), "%s%s", cwd, "/assets");
+//      kinc_internal_set_files_location(assets_dir);
       free(cwd);
     }
   }

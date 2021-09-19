@@ -6,7 +6,9 @@
 ;;               (format *stderr* "Resized to ~D x ~D~%" (hook 'width) (hook 'height)))))
 
 (require 'kinc/system
-         'kinc/window)
+         'kinc/window
+         'kinc/graphics1)
+
 
 (define application-name "s7 Kinc")
 (define framebuffer-options (make-kinc_framebuffer_options_t))
@@ -14,11 +16,16 @@
                         :title application-name
                         :width 300 :height 300))
 
-(with-let (sublet () (*libkinc* 'system)
-                     (*libkinc* 'window))
 
-  ; Do cool stuff here.
-  (+ 1 2 3 4 5)
+(with-let (sublet () (*libkinc* 'graphics1))
+
+  (kinc_g1_init 300 300)
+  (set! (hook-functions s7kinc-update-hook)
+        (list (lambda (hook)
+                (kinc_g1_begin)
+                (kinc_g1_set_pixel 100 100 0.0 1.0 0.0)
+                (kinc_g1_end)
+                )))
 
 )
 

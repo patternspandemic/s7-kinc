@@ -9,6 +9,7 @@
 #include <kinc/color.h>
 #include <kinc/error.h>
 #include <kinc/graphics4/graphics.h>
+#include <kinc/io/filereader.h>
 #include <kinc/log.h>
 #include <kinc/system.h>
 #include <kinc/window.h>
