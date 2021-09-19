@@ -352,6 +352,7 @@
              (type-config-func
               (string-append "static void configure_" type-str "(s7_scheme *sc) {\n"
                 "    " type-tag-str " = s7_make_c_type(sc, \"<" type-str ">\");\n"
+                "    s7_define_variable_with_documentation(sc, \"<" type-str ">\", s7_make_integer(sc, " type-tag-str "), \"The internal type tag (an integer) for the " type-str " C type.\" );\n"
                 "    s7_define_safe_function_star(sc, \"make-" type-str "\", g_" type-str "__make, MAKE_" type-str-cap "__ARGLIST, G_" type-str-cap "__MAKE_HELP);\n"
                 "    s7_define_typed_function(sc,     \"" type-str "?\",     g_" type-str "__is, 1, 0, false, G_" type-str-cap "__IS_HELP, G_" type-str-cap "__IS_SIG);\n"
                 "    s7_define_typed_function(sc,     \"" type-str "-ref\",  g_" type-str "__ref, 2, 0, false, G_" type-str-cap "__REF_HELP, G_" type-str-cap "__REF_SIG);\n"
