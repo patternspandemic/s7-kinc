@@ -236,7 +236,7 @@ void s7kinc_init(void) {
   load_scm(sc, "main.scm");
 
   /* Required definitions if main.scm didn't take care of them. */
-  s7_eval_c_string(sc, "(unless (defined? 'application-name) (define application-name \"s7 Kinc Default\"))");
+  s7_eval_c_string(sc, "(unless (defined? 'application-name) (define application-name \"s7 Kinc\"))");
   s7_eval_c_string(sc, "(unless (member 'window (map (lambda(p) (car p)) (let->list *libkinc*))) (require 'kinc/window))");
   s7_eval_c_string(sc, "(unless (defined? 'framebuffer-options) (define framebuffer-options (with-let (*libkinc* 'window) (make-kinc_framebuffer_options_t))))");
   s7_eval_c_string(sc, "(unless (defined? 'window-options) (define window-options (with-let (*libkinc* 'window) (make-kinc_window_options_t :title application-name))))");
@@ -246,7 +246,10 @@ void s7kinc_init(void) {
   framebuffer_opts = s7_eval_c_string(sc, "framebuffer-options");
   window_opts = s7_eval_c_string(sc, "window-options");
 
-  // TODO: error when name, framebuffer_opts, or window_opts are wrong types.
+  /* Make sure we get expected types. */
+  kinc_affirm_message(s7_is_string(name), "Error: application-name must define a string.");
+  kinc_affirm_message((s7_c_object_type(framebuffer_opts) == s7ctypes_name_to_s7tag(sc, "<kinc_framebuffer_options_t>")), "Error: framebuffer-options must define a <kinc_framebuffer_options_t>");
+  kinc_affirm_message((s7_c_object_type(window_opts) == s7ctypes_name_to_s7tag(sc, "<kinc_window_options_t>")), "Error: window-options must define a <kinc_window_options_t>");
 
   /* Initialize and start Kinc */
   kinc_window_options_t *wo = s7_c_object_value(window_opts);

@@ -15,6 +15,7 @@
 
 #include "../lib/s7/s7.h"
 #include "../lib/sds/sds.h" // Simple Dynamic Strings
+#include "../lib/util/s7ctypes.h"
 #include "repl.h"
 
 /* S7KINC PATHS INJECTED HERE */

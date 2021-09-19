@@ -8,7 +8,7 @@
 (require 'kinc/system
          'kinc/window)
 
-(define application-name "s7 Kinc Main")
+(define application-name "s7 Kinc")
 (define framebuffer-options (make-kinc_framebuffer_options_t))
 (define window-options (make-kinc_window_options_t
                         :title application-name

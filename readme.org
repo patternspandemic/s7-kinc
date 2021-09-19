@@ -31,6 +31,7 @@ Work in Progress, not usable by others.
     Done, but existing objects are still tied to previously loaded c-functions. New c-objects use newly loaded so.
   + [-] Builds
     - [-] release build with stripped dependencies / source
+    - [ ] assert / s7 error stripping?
     - [X] development build with shell / load-paths overridden
 
 **** Some Notes
