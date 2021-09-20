@@ -24,9 +24,6 @@
 #define S7KINC_CLOAD_PATH
 #define S7KINC_SCHEME_PATH
 
-/* TODO: TEMPORARY */
-#define KINC_COLOR_KINC 0x4B696E63
-
 /* s7 Scheme interpreter instance */
 s7_scheme *sc;
 

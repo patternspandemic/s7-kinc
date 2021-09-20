@@ -11,6 +11,7 @@
   '(color
     display
     graphics1
+    graphics4
     image
     system
     window))

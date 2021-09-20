@@ -5,9 +5,6 @@
  * windows and the data parameter for resize and ppi_changed callback hooks. It
  * may be better to move these hooks out of core.c */
 
-/* TODO: Temporary */
-static uint32_t clear_color = KINC_COLOR_KINC;
-
 /* Scheme side hooks to extend Kinc system callbacks. */
 static s7_pointer update_hook;
 static s7_pointer foreground_hook;
@@ -27,15 +24,6 @@ static s7_pointer ppi_changed_hook;
 /* TODO: Assets Handling */
 //static sds assets_dir;
 
-
-/* TODO: Temporary */
-static s7_pointer change_color(s7_scheme *sc, s7_pointer args) {
-  if (s7_is_integer(s7_car(args))) {
-    clear_color = s7_integer(s7_car(args));
-    return(s7_make_integer(sc, clear_color));
-  }
-  return(s7_wrong_type_arg_error(sc, "add1", 1, s7_car(args), "an integer"));
-}
 
 static void s7kinc_cleanup(void) {
   s7kinc_repl_cleanup();
@@ -77,13 +65,6 @@ static void make_hooks(void) {
 static void s7kinc_update_cb(void) {
   s7kinc_repl_listen(); // TODO: Don't listen every frame..
   s7_call(sc, update_hook, s7_nil(sc));
-
-  /* TODO: Temporary */
-  kinc_g4_begin(0);
-  kinc_g4_clear(KINC_G4_CLEAR_COLOR, clear_color, 0.0f, 0);
-  // Draw stuff ...
-  kinc_g4_end(0);
-  kinc_g4_swap_buffers();
 }
 
 static void s7kinc_foreground_cb(void) { s7_call(sc, foreground_hook, s7_nil(sc)); }
@@ -232,9 +213,6 @@ void s7kinc_init(void) {
   /* Add hooks to various Kinc system callbacks. */
   make_hooks();
   set_callbacks();
-
-  /* TODO: Temporary */
-  s7_define_function(sc, "change-color", change_color, 1, 0, false, "(change-color color) change the clear color");
 
   /* Initialize autoloads to Kinc s7 shared library bindings. */
   load_scm(sc, "kinc.scm");

@@ -7,7 +7,8 @@
 
 (require 'kinc/system
          'kinc/window
-         'kinc/graphics1)
+         'kinc/color
+         'kinc/graphics4)
 
 
 (define application-name "s7 Kinc")
@@ -16,15 +17,20 @@
                         :title application-name
                         :width 300 :height 300))
 
+(define clear-color #x4B696E63)
 
-(with-let (sublet () (*libkinc* 'graphics1))
+(define (change-color color)
+  (set! clear-color color))
 
-  (kinc_g1_init 300 300)
+(with-let (sublet () (*libkinc* 'graphics4)
+                     (*libkinc* 'color))
+
   (set! (hook-functions s7kinc-update-hook)
         (list (lambda (hook)
-                (kinc_g1_begin)
-                (kinc_g1_set_pixel 100 100 0.0 1.0 0.0)
-                (kinc_g1_end)
+                (kinc_g4_begin 0)
+                (kinc_g4_clear KINC_G4_CLEAR_COLOR clear-color 0.0 0)
+                (kinc_g4_end 0)
+                (kinc_g4_swap_buffers)
                 )))
 
 )
