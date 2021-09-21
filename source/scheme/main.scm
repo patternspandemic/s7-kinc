@@ -8,7 +8,7 @@
              graphics4)
 
 (define application-name "s7 Kinc")
-(define framebuffer-options (make-kinc_framebuffer_options_t))
+;; (define framebuffer-options (make-kinc_framebuffer_options_t))
 (define window-options (make-kinc_window_options_t
                         :title application-name
                         :width 300 :height 300))

@@ -4,14 +4,23 @@
 
 ;; TODO: Guard against reloads.
 
-;(format *stderr* "Running in ~A mode.~%" (if *s7kinc-develop-mode* "DEV" "BUILD"))
-
 ;; The list of requirable kinc libraries.
 (define kinc-libs
   '(color
     display
     graphics1
     graphics4
+    graphics4/constantlocation
+    graphics4/indexbuffer
+    graphics4/pipeline
+    graphics4/rendertarget
+    graphics4/shader
+    graphics4/texture
+    graphics4/texturearray
+    graphics4/textureunit
+    graphics4/usage
+    graphics4/vertexbuffer
+    graphics4/vertexstructure
     image
     system
     window))
