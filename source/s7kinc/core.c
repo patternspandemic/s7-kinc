@@ -214,6 +214,9 @@ void s7kinc_init(void) {
   make_hooks();
   set_callbacks();
 
+  /* Make available some general utility. */
+  load_scm(sc, "util.scm");
+
   /* Initialize autoloads to Kinc s7 shared library bindings. */
   load_scm(sc, "kinc.scm");
 

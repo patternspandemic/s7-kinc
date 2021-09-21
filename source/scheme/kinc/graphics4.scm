@@ -11,6 +11,12 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/graphics
+    :headers ("kinc/graphics4/pipeline.h"
+              "kinc/graphics4/rendertarget.h"
+              "kinc/graphics4/textureunit.h"
+              "kinc/graphics4/texture.h"
+              "kinc/graphics4/texturearray.h")
+
     :c-info (
       (C-macro (int (KINC_G4_CLEAR_COLOR
                      KINC_G4_CLEAR_DEPTH
@@ -55,11 +61,34 @@
       (void kinc_g4_draw_indexed_vertices_from_to_from (int int int))
       (void kinc_g4_draw_indexed_vertices_instanced (int))
       (void kinc_g4_draw_indexed_vertices_instanced_from_to (int int int))
+      (void kinc_g4_set_stencil_reference_value (int))
+      (void kinc_g4_set_texture_operation ((kinc_g4_texture_operation_t int) (kinc_g4_texture_argument_t int) (kinc_g4_texture_argument_t int)))
+       (int kinc_g4_max_bound_textures (void))
+      (bool kinc_g4_render_targets_inverted_y (void))
+      (bool kinc_g4_non_pow2_textures_supported (void))
+      (void kinc_g4_restore_render_target (void))
+      (bool kinc_g4_init_occlusion_query (int*))
+      (void kinc_g4_delete_occlusion_query (int))
+      ;; (void kinc_g4_start_occlusion_query (int)) ; NOTE: Only for Direct3D
+      ;; (void kinc_g4_end_occlusion_query (int)) ; NOTE: Only for Direct3D
+      (bool kinc_g4_are_query_results_available (int))
+      (void kinc_g4_get_query_results (int int*))
+       (int kinc_g4_antialiasing_samples (void))
+      (void kinc_g4_set_antialiasing_samples (int))
+
+      ;; TODO: Functions requiring special C-object conversion
+;;      (in-C "
+
+
+;; static s7_pointer g_(s7_scheme *sc, s7_pointer args) {
+
+;; }
+
+;;") ;; end special C-object conversion
+
 ;      (void kinc_g4_set_texture_addressing ((symbol "struct kinc_g4_texture_unit") (kinc_g4_texture_direction_t int) (kinc_g4_texture_addressing_t int)))
 ;      (void kinc_g4_set_texture3d_addressing ((symbol "struct kinc_g4_texture_unit") (kinc_g4_texture_direction_t int) (kinc_g4_texture_addressing_t int)))
 ;      (void kinc_g4_set_pipeline ((symbol "struct kinc_g4_pipeline*")))
-      (void kinc_g4_set_stencil_reference_value (int))
-      (void kinc_g4_set_texture_operation ((kinc_g4_texture_operation_t int) (kinc_g4_texture_argument_t int) (kinc_g4_texture_argument_t int)))
 ;      (void kinc_g4_set_int ((symbol "struct kinc_g4_constant_location") int))
 ;      (void kinc_g4_set_int2 ((symbol "struct kinc_g4_constant_location") int int))
 ;      (void kinc_g4_set_int3 ((symbol "struct kinc_g4_constant_location") int int int))
@@ -81,24 +110,13 @@
 ;      (void kinc_g4_set_texture3d_mipmap_filter ((symbol "struct kinc_g4_texture_unit") kinc_g4_mipmap_filter_t))
 ;      (void kinc_g4_set_texture_compare_mode ((symbol "struct kinc_g4_texture_unit") bool))
 ;      (void kinc_g4_set_cubemap_compare_mode ((symbol "struct kinc_g4_texture_unit") bool))
-       (int kinc_g4_max_bound_textures (void))
-      (bool kinc_g4_render_targets_inverted_y (void))
-      (bool kinc_g4_non_pow2_textures_supported (void))
-      (void kinc_g4_restore_render_target (void))
 ;      (void kinc_g4_set_render_targets ((symbol "struct kinc_g4_render_target**") int))
 ;      (void kinc_g4_set_render_target_face ((symbol "struct kinc_g4_render_target*") int))
 ;      (void kinc_g4_set_texture ((symbol "struct kinc_g4_texture_unit") (symbol "struct kinc_g4_texture*")))
 ;      (void kinc_g4_set_image_texture ((symbol "struct kinc_g4_texture_unit") (symbol "struct kinc_g4_texture *")))
-      (bool kinc_g4_init_occlusion_query (int*))
-      (void kinc_g4_delete_occlusion_query (int))
-      ;; (void kinc_g4_start_occlusion_query (int)) ; NOTE: Only for Direct3D
-      ;; (void kinc_g4_end_occlusion_query (int)) ; NOTE: Only for Direct3D
-      (bool kinc_g4_are_query_results_available (int))
-      (void kinc_g4_get_query_results (int int*))
 ;      (void kinc_g4_set_texture_array ((symbol "struct kinc_g4_texture_unit") (symbol "struct kinc_g4_texture_array*")))
-       (int kinc_g4_antialiasing_samples (void))
-      (void kinc_g4_set_antialiasing_samples (int))
 
+      ;; (C-function ...)
     )
   )
 
