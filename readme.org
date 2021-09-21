@@ -57,9 +57,9 @@ Work in Progress, not usable by others.
   + [ ] compute
   + [X] graphics1
   + [ ] graphics2
-  + [ ] graphics4
+  + [-] graphics4
     - [ ] constantlocation
-    - [ ] graphics
+    - [-] graphics
     - [ ] indexbuffer
     - [ ] pipeline
     - [ ] rendertarget
@@ -148,3 +148,8 @@ system.h
 - ! kinc_disallow_user_change
 - ! kinc_allow_user_change
 - ! kinc_set_keep_screen_on
+
+graphics4/graphics.h (opengl backend)
+- ~ kinc_g4_render_occlusion_query -> in backend / not in api (OpenGL only?)
+- ~ kinc_g4_start_occlusion_query -> in api / not in backend (Direct3D only?)
+- ~ kinc_g4_end_occlusion_query - in api / not in backend (Direct3D only?)
