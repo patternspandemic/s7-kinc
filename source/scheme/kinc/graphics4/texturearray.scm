@@ -1,4 +1,4 @@
-;;; texturearray.scm
+;;; TODO: texturearray.scm
 ;;;
 ;;; kinc/graphics4/texturearray.h
 
@@ -11,8 +11,14 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/texturearray
-    :ctypes ()
-    :c-info ()
+    :ctypes ((kinc_g4_texture_array_t))
+
+    :c-info (
+
+;; void kinc_g4_texture_array_init (kinc_g4_texture_array_t *array, kinc_image_t *images, int count)
+;; void kinc_g4_texture_array_destroy (kinc_g4_texture_array_t *array)
+
+    )
   )
 
 (curlet))

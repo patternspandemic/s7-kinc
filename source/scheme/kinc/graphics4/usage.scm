@@ -11,8 +11,11 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/usage
-    :ctypes ()
-    :c-info ()
+    :c-info (
+      ((kinc_g4_usage_t int) (KINC_G4_USAGE_STATIC
+                              KINC_G4_USAGE_DYNAMIC
+                              KINC_G4_USAGE_READABLE))
+    )
   )
 
 (curlet))

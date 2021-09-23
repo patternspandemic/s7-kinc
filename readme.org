@@ -17,7 +17,7 @@ Work in Progress, not usable by others.
     - [ ] Developer shell environment vars
       + [ ] S7KINC_DEV_SHELL
       + [ ] S7KINC_DEV_ROOT
-  + [ ] main.scm and special defines, hooks, etc.
+  + [ ] main.scm and special defines, hooks, reqlet, etc.
   + [ ] Examples
 
 *** Progress of Application
