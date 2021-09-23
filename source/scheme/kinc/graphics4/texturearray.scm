@@ -15,9 +15,23 @@
 
     :c-info (
 
-;; void kinc_g4_texture_array_init (kinc_g4_texture_array_t *array, kinc_image_t *images, int count)
-;; void kinc_g4_texture_array_destroy (kinc_g4_texture_array_t *array)
+      ;; TODO: Functions requiring special C-object conversion
+      (in-C "
 
+static s7_pointer g_kinc_g4_texture_array_init(s7_scheme *sc, s7_pointer args) {
+// void kinc_g4_texture_array_init (kinc_g4_texture_array_t *array, kinc_image_t *images, int count)
+
+}
+
+static s7_pointer g_kinc_g4_texture_array_destroy(s7_scheme *sc, s7_pointer args) {
+// void kinc_g4_texture_array_destroy (kinc_g4_texture_array_t *array)
+
+}
+
+") ;; end special C-object conversion
+
+      (C-function ("kinc_g4_texture_array_init" g_kinc_g4_texture_array_init "void kinc_g4_texture_array_init (kinc_g4_texture_array_t *array, kinc_image_t *images, int count)" 3))
+      (C-function ("kinc_g4_texture_array_destroy" g_kinc_g4_texture_array_destroy "void kinc_g4_texture_array_destroy (kinc_g4_texture_array_t *array)" 1))
     )
   )
 

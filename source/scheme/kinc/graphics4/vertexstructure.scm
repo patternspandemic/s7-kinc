@@ -26,9 +26,23 @@
                                     KINC_G4_VERTEX_DATA_SHORT4_NORM
                                     KINC_G4_VERTEX_DATA_COLOR))
 
-;; void kinc_g4_vertex_structure_init (kinc_g4_vertex_structure_t *structure)
-;; void kinc_g4_vertex_structure_add (kinc_g4_vertex_structure_t *structure, const char *name, kinc_g4_vertex_data_t data)
+      ;; TODO: Functions requiring special C-object conversion
+      (in-C "
 
+static s7_pointer g_kinc_g4_vertex_structure_init(s7_scheme *sc, s7_pointer args) {
+// void kinc_g4_vertex_structure_init (kinc_g4_vertex_structure_t *structure)
+
+}
+
+static s7_pointer g_kinc_g4_vertex_structure_add(s7_scheme *sc, s7_pointer args) {
+// void kinc_g4_vertex_structure_add (kinc_g4_vertex_structure_t *structure, const char *name, kinc_g4_vertex_data_t data)
+
+}
+
+") ;; end special C-object conversion
+
+      (C-function ("kinc_g4_vertex_structure_init" g_kinc_g4_vertex_structure_init "void kinc_g4_vertex_structure_init (kinc_g4_vertex_structure_t *structure)" 1))
+      (C-function ("kinc_g4_vertex_structure_add" g_kinc_g4_vertex_structure_add "void kinc_g4_vertex_structure_add (kinc_g4_vertex_structure_t *structure, const char *name, kinc_g4_vertex_data_t data)" 3))
     )
   )
 
