@@ -37,6 +37,32 @@ Work in Progress, not usable by others.
 **** Some Notes
 - Prebuilt shared libs for kinc bindings seem to work, but themselves are not linked to some needed functions (sds, s7ctypes). Seems not to be a problem as they're found when loaded into the main application.
 - While bindings for kinc_init and kinc_start work, the main loop is kept on the C side to avoid scheme-side errors halting the loop (which occurs when it's started on the scheme side). This way the REPL remains useful.
+- opaque types
+  + kinc_compute_constant_location
+  + kinc_compute_shader
+  + kinc_compute_texture_unit
+  + kinc_event
+  + kinc_fiber
+  + kinc_mutex
+  + kinc_semaphore
+  + kinc_thread
+  + kinc_thread_local
+  + kinc_uber_mutex
+  + kinc_g4_constant_location
+  + kinc_g4_index_buffer
+  + kinc_g4_shader
+  + kinc_g4_texture_array
+  + kinc_g4_texture_unit
+  + kinc_g4_vertex_buffer
+  + kinc_g5_command_list
+  + kinc_g5_compute_shader
+  + kinc_g5_constant_location
+  + kinc_g5_index_buffer
+  + kinc_g5_shader
+  + kinc_g5_texture_unit
+  + kinc_g5_vertex_buffer
+  + kinc_video
+
 
 *** Progress of Bindings
 

@@ -143,6 +143,7 @@
              (type-str (symbol->string type-sym))
              (type-str-cap (string-upcase type-str))
              (type-tag-str (format #f "~A_s7tag" type-sym))
+             (type-opaque? (null? type-fields))
              (type-names (map (lambda (p) (cadr p)) type-fields))
 
              ; Declarations and functions
@@ -170,7 +171,9 @@
                 "        return(s7_f(sc));\n"
                 "    a = (" type-str " *)s7_c_object_value(p1);\n"
                 "    b = (" type-str " *)s7_c_object_value(p2);\n"
-                "    return(s7_make_boolean(sc, " (format #f "~{(a->~A == b->~A)~^ &&~%~32T~}));\n" (map (lambda (n) (values n n)) type-names))
+                "    return(s7_make_boolean(sc, " (if type-opaque?
+                                                      "(a == b)));\n" ; Compare internal pointer at best.
+                                                      (format #f "~{(a->~A == b->~A)~^ &&~%~32T~}));\n" (map (lambda (n) (values n n)) type-names))) ; Compare fields.
                 "}\n"))
 
              ;;;(type-equivalent-func (string-append)) ; TODO?
@@ -327,10 +330,10 @@
 
              ; FIXME: Work in progress.
              ;        - Make work with struct types, requires s7tag lookup (see system)
-             (type-make-func
+             (type-make-func (if type-opaque? ""
               (string-append "static s7_pointer g_" type-str "__make(s7_scheme *sc, s7_pointer args) {\n"
                 "    #define G_" type-str-cap "__MAKE_HELP \"(make-" type-str ") returns a new " type-str ".\"\n"
-                "    #define MAKE_" type-str-cap "__ARGLIST \"" (format #f "~{(~A ~A~A~A)~^ ~}" (map (lambda (tf) (values (cadr tf) (if (string? (caddr tf)) "\\\"" "") (caddr tf) (if (string? (caddr tf)) "\\\"" ""))) type-fields)) "\"\n"
+                "    #define MAKE_" type-str-cap "__ARGLIST \"" (if type-opaque? "" (format #f "~{(~A ~A~A~A)~^ ~}" (map (lambda (tf) (values (cadr tf) (if (string? (caddr tf)) "\\\"" "") (caddr tf) (if (string? (caddr tf)) "\\\"" ""))) type-fields))) "\"\n"
                 "\n"
                 "    " type-str " *ko = (" type-str " *)calloc(1, sizeof(" type-str "));\n"
                 "\n"
@@ -347,30 +350,30 @@
                              (iota (length type-fields)) type-fields))
                 "    s7_pointer s7_ko = s7_make_c_object(sc, " type-tag-str ", (void *)ko);\n"
                 "    return(s7_ko);\n"
-                "}\n"))
+                "}\n")))
 
              (type-config-func
               (string-append "static void configure_" type-str "(s7_scheme *sc) {\n"
                 "    " type-tag-str " = s7_make_c_type(sc, \"<" type-str ">\");\n"
                 "    s7_define_variable_with_documentation(sc, \"<" type-str ">\", s7_make_integer(sc, " type-tag-str "), \"The internal type tag (an integer) for the " type-str " C type.\" );\n"
-                "    s7_define_safe_function_star(sc, \"make-" type-str "\", g_" type-str "__make, MAKE_" type-str-cap "__ARGLIST, G_" type-str-cap "__MAKE_HELP);\n"
+                (if type-opaque? "" (string-append "    s7_define_safe_function_star(sc, \"make-" type-str "\", g_" type-str "__make, MAKE_" type-str-cap "__ARGLIST, G_" type-str-cap "__MAKE_HELP);\n"))
                 "    s7_define_typed_function(sc,     \"" type-str "?\",     g_" type-str "__is, 1, 0, false, G_" type-str-cap "__IS_HELP, G_" type-str-cap "__IS_SIG);\n"
-                "    s7_define_typed_function(sc,     \"" type-str "-ref\",  g_" type-str "__ref, 2, 0, false, G_" type-str-cap "__REF_HELP, G_" type-str-cap "__REF_SIG);\n"
-                "    s7_define_typed_function(sc,     \"" type-str "-set!\", g_" type-str "__set, 3, 0, false, G_" type-str-cap "__SET_HELP, G_" type-str-cap "__SET_SIG);\n"
+                (if type-opaque? "" (string-append "    s7_define_typed_function(sc,     \"" type-str "-ref\",  g_" type-str "__ref, 2, 0, false, G_" type-str-cap "__REF_HELP, G_" type-str-cap "__REF_SIG);\n"))
+                (if type-opaque? "" (string-append "    s7_define_typed_function(sc,     \"" type-str "-set!\", g_" type-str "__set, 3, 0, false, G_" type-str-cap "__SET_HELP, G_" type-str-cap "__SET_SIG);\n"))
                 "    s7_c_type_set_gc_free(sc,       " type-tag-str ", " type-str "__free);\n"
-                "  //s7_c_type_set_gc_mark(sc,       " type-tag-str ", " type-str "__mark); // nothing to mark\n"
+                (if type-opaque? "" (string-append "  //s7_c_type_set_gc_mark(sc,       " type-tag-str ", " type-str "__mark); // nothing to mark\n"))
                 "    s7_c_type_set_is_equal(sc,      " type-tag-str ", " type-str "__is_equal);\n"
                 "  //s7_c_type_set_is_equivalent(sc, " type-tag-str ", " type-str "__is_equivalent);\n"
-                "    s7_c_type_set_ref(sc,           " type-tag-str ", g_" type-str "__ref);\n"
-                "    s7_c_type_set_set(sc,           " type-tag-str ", g_" type-str "__set);\n"
+                (if type-opaque? "" (string-append "    s7_c_type_set_ref(sc,           " type-tag-str ", g_" type-str "__ref);\n"))
+                (if type-opaque? "" (string-append "    s7_c_type_set_set(sc,           " type-tag-str ", g_" type-str "__set);\n"))
                 "  //s7_c_type_set_length(sc,        " type-tag-str ", " type-str "__length);\n"
                 "  //s7_c_type_set_copy(sc,          " type-tag-str ", " type-str "__copy);\n"
                 "  //s7_c_type_set_fill(sc,          " type-tag-str ", " type-str "__fill);\n"
                 "  //s7_c_type_set_reverse(sc,       " type-tag-str ", " type-str "__reverse);\n"
                 "  //s7_c_type_set_to_list(sc,       " type-tag-str ", " type-str "__to_list);\n"
                 "    s7_c_type_set_to_string(sc,     " type-tag-str ", " type-str "__to_string);\n"
-                "    s7_c_type_set_getter(sc,        " type-tag-str ", s7_name_to_value(sc, \"" type-str "-ref\"));\n"
-                "    s7_c_type_set_setter(sc,        " type-tag-str ", s7_name_to_value(sc, \"" type-str "-set!\"));\n"
+                (if type-opaque? "" (string-append "    s7_c_type_set_getter(sc,        " type-tag-str ", s7_name_to_value(sc, \"" type-str "-ref\"));\n"))
+                (if type-opaque? "" (string-append "    s7_c_type_set_setter(sc,        " type-tag-str ", s7_name_to_value(sc, \"" type-str "-set!\"));\n"))
                 "}\n"))
 
              ; Compile everything together
@@ -380,10 +383,10 @@
                                ;;;,type-mark-func
                                ,type-is-equal-func
                                ;;;,type-equivalent-func
-                               ,type-field-by-kw-func
-                               ,type-set-field-by-kw-func
-                               ,type-ref-func
-                               ,type-set-func
+                               ,(if type-opaque? "" type-field-by-kw-func)
+                               ,(if type-opaque? "" type-set-field-by-kw-func)
+                               ,(if type-opaque? "" type-ref-func)
+                               ,(if type-opaque? "" type-set-func)
                                ;;;,type-length-func
                                ;;;,type-copy-func
                                ;;;,type-fill-func
@@ -393,7 +396,7 @@
                                ,type-display-readably-func
                                ,type-to-string-func
                                ,type-is-func
-                               ,type-make-func
+                               ,(if type-opaque? "" type-make-func)
                                ,type-config-func))))
 
         ; Prepend the c-code to the ctypes-c list.
