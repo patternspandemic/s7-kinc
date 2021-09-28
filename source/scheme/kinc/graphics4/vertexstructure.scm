@@ -11,8 +11,10 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/vertexstructure
-    :ctypes ((kinc_g4_vertex_element_t #|TODO|#)
-             (kinc_g4_vertex_structure_t #|TODO|# ))
+    :ctypes ((:name kinc_g4_vertex_element_t
+              :fields (#|TODO|#))
+             (:name kinc_g4_vertex_structure_t
+              :fields (#|TODO|# )))
 
     :c-info (
 

@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/constantlocation
-    :ctypes ((kinc_g4_constant_location_t))
+    :ctypes ((:name kinc_g4_constant_location_t))
   )
 
 (curlet))

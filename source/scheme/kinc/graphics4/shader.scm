@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/shader
-    :ctypes ((kinc_g4_shader_t))
+    :ctypes ((:name kinc_g4_shader_t :destroy kinc_g4_shader_destroy))
 
     :c-info (
       ((kinc_g4_shader_type_t int) (KINC_G4_SHADER_TYPE_FRAGMENT

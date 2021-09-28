@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/vertexbuffer
-    :ctypes ((kinc_g4_vertex_buffer_t))
+    :ctypes ((:name kinc_g4_vertex_buffer_t :destroy kinc_g4_vertex_buffer_destroy))
 
     :c-info (
 

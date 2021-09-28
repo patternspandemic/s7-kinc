@@ -11,7 +11,8 @@
 (with-let (unlet)
 
   (bind-kinc image
-    :ctypes ((kinc_image_t
+    :ctypes ((:name kinc_image_t
+              :fields (
               (int width 0)
               (int height 0)
               (int depth 0)
@@ -19,15 +20,16 @@
               (unsigned internal_format 0)
               ((enum kinc_image_compression_t) compression 0)
               (void* data (c-pointer 0))
-              (int data_size 0))
+              (int data_size 0)))
 
               ;; TODO: Probably just use local 'in-C', or implement scheme side?
-             ;; (kinc_image_read_callbacks_t
+             ;; (:name kinc_image_read_callbacks_t
+             ;;  :fields (
              ;;  //int(* read )(void *user_data, void *data, size_t size)
              ;;  //void(* seek )(void *user_data, int pos)
              ;;  //int(* pos )(void *user_data)
              ;;  //size_t(* size )(void *user_data)
-             ;;  )
+             ;;  ))
             )
 
     :c-info (

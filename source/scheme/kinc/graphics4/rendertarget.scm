@@ -11,7 +11,8 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/rendertarget
-    :ctypes ((kinc_g4_render_target_t #|TODO|#))
+    :ctypes ((:name kinc_g4_render_target_t :destroy kinc_g4_render_target_destroy
+              :fields (#|TODO|#)))
 
     :c-info (
       ((kinc_g4_render_target_format_t int) (KINC_G4_RENDER_TARGET_FORMAT_32BIT

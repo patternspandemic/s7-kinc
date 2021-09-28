@@ -11,14 +11,15 @@
 (with-let (unlet)
 
   (bind-kinc display
-    :ctypes ((kinc_display_mode_t
+    :ctypes ((:name kinc_display_mode_t
+              :fields (
                (int x 0)
                (int y 0)
                (int width 0)
                (int height 0)
                (int pixels_per_inch 0)
                (int frequency 0)
-               (int bits_per_pixel 0)))
+               (int bits_per_pixel 0))))
 
     :c-info (
        (void kinc_display_init (void))

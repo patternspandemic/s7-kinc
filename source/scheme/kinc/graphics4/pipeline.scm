@@ -11,7 +11,8 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/pipeline
-    :ctypes ((kinc_g4_pipeline_t #|TODO|#))
+    :ctypes ((:name kinc_g4_pipeline_t :destroy kinc_g4_pipeline_destroy
+              :fields (#|TODO|#)))
 
     :c-info (
       ((kinc_g4_blending_operation_t int) (KINC_G4_BLEND_ONE

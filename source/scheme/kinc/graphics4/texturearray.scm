@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/texturearray
-    :ctypes ((kinc_g4_texture_array_t))
+    :ctypes ((:name kinc_g4_texture_array_t :destroy kinc_g4_texture_array_destroy))
 
     :c-info (
 

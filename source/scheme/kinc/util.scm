@@ -138,7 +138,7 @@
 
     ; Generate the definitions and initialization needed for a c-type.
     ; TODO: Might an open-output-string save some memory?
-    (define (expand-bindings-for-c-type type-sym type-fields)
+    (define (expand-bindings-for-c-type type-sym type-fields type-destroyer)
       (let* (; Some helper values
              (type-str (symbol->string type-sym))
              (type-str-cap (string-upcase type-str))
@@ -150,6 +150,7 @@
              (type-tag-decl (string-append "static int " type-tag-str " = 0;\n"))
 
              ; FIXME: This needs to free member fields as well depending on type. I.e. kinc_type_t*, char*, etc.
+             ; FIXME: Some types also have related destroy functions.
              (type-free-func
               (string-append "static s7_pointer " type-str "__free(s7_scheme *sc, s7_pointer obj) {\n"
                 "    free(s7_c_object_value(obj));\n"
@@ -408,14 +409,12 @@
         (set! ctypes-init (cons `(C-init ,call-str) ctypes-init))))
 
     ; Generate the bindings necessary for a single c-type.
-    (define (handle-c-type type)
-      (let ((type-sym (car type))
-            (type-fields (cdr type)))
-        (expand-bindings-for-c-type type-sym type-fields)
-        (call-configure-for-c-type (symbol->string type-sym))))
+    (define* (handle-c-type name (fields ()) destroy)
+        (expand-bindings-for-c-type name fields destroy)
+        (call-configure-for-c-type (symbol->string name)))
 
     ; Generate code for each of the c-types.
-    (for-each (lambda(t) (handle-c-type t)) ctypes)
+    (for-each (lambda(t) (apply handle-c-type (values t))) ctypes)
 
     ; Finally the expansion:
     `(c-define ',(append ctypes-c c-info ctypes-init) ,prefix ',lib-headers ,lib-cflags ,lib-ldflags ,(if *s7kinc-dev-shell-detected* (values) lib-output-name))))

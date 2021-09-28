@@ -11,24 +11,26 @@
 (with-let (unlet)
 
   (bind-kinc window
-    :ctypes ((kinc_framebuffer_options_t
-              (int frequency 60)
-              (bool vertical_sync #t)
-              (int color_bits 32)
-              (int depth_bits 16)
-              (int stencil_bits 8)
-              (int samples_per_pixel 1))
+    :ctypes ((:name kinc_framebuffer_options_t
+              :fields (
+               (int frequency 60)
+               (bool vertical_sync #t)
+               (int color_bits 32)
+               (int depth_bits 16)
+               (int stencil_bits 8)
+               (int samples_per_pixel 1)))
 
-             (kinc_window_options_t
-              (char* title "s7-kinc")
-              (int x -1)
-              (int y -1)
-              (int width 800)
-              (int height 600)
-              (int display_index 0)
-              (bool visible #t)
-              (int window_features 7) ; KINC_WINDOW_FEATURE_RESIZEABLE | KINC_WINDOW_FEATURE_MINIMIZABLE | KINC_WINDOW_FEATURE_MAXIMIZABLE = 1 | 2 | 4 = 7
-              ((enum kinc_window_mode_t) mode 0))) ; KINC_WINDOW_MODE_WINDOW = 0
+             (:name kinc_window_options_t
+              :fields (
+               (char* title "s7-kinc")
+               (int x -1)
+               (int y -1)
+               (int width 800)
+               (int height 600)
+               (int display_index 0)
+               (bool visible #t)
+               (int window_features 7) ; KINC_WINDOW_FEATURE_RESIZEABLE | KINC_WINDOW_FEATURE_MINIMIZABLE | KINC_WINDOW_FEATURE_MAXIMIZABLE = 1 | 2 | 4 = 7
+               ((enum kinc_window_mode_t) mode 0)))) ; KINC_WINDOW_MODE_WINDOW = 0
 
     :c-info (
       (C-macro (int (KINC_WINDOW_FEATURE_RESIZEABLE

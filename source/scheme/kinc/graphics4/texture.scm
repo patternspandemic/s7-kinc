@@ -12,7 +12,8 @@
 
   (bind-kinc graphics4/texture
     :headers ("kinc/image.h")
-    :ctypes ((kinc_g4_texture_t #|TODO|#))
+    :ctypes ((:name kinc_g4_texture_t :destroy kinc_g4_texture_destroy
+              :fields (#|TODO|#)))
 
     :c-info (
 

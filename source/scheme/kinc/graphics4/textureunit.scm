@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/textureunit
-    :ctypes ((kinc_g4_texture_unit_t))
+    :ctypes ((:name kinc_g4_texture_unit_t))
   )
 
 (curlet))

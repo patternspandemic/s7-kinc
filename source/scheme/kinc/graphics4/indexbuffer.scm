@@ -11,7 +11,7 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/indexbuffer
-    :ctypes ((kinc_g4_index_buffer_t))
+    :ctypes ((:name kinc_g4_index_buffer_t :destroy kinc_g4_index_buffer_destroy))
 
     :c-info (
       ((kinc_g4_index_buffer_format_t int) (KINC_G4_INDEX_BUFFER_FORMAT_32BIT
