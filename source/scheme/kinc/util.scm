@@ -153,6 +153,8 @@
              ; FIXME: Some types also have related destroy functions.
              (type-free-func
               (string-append "static s7_pointer " type-str "__free(s7_scheme *sc, s7_pointer obj) {\n"
+                (if type-destroyer
+                    (format #f "~A(s7_c_object_values(obj));\n" type-destroyer) "")
                 "    free(s7_c_object_value(obj));\n"
                 "    return(NULL);\n"
                 "}\n"))
