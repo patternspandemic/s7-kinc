@@ -23,3 +23,7 @@ s7_int s7ctypes_name_to_s7tag(s7_scheme *sc, const char *name) {
 
     return(type);
 }
+
+s7_pointer s7ctypes_wrap_int_array(s7_scheme *sc, int *array) {
+    // TODO
+}
