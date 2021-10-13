@@ -81,7 +81,7 @@ static s7_pointer g_kinc_g4_index_buffer_lock(s7_scheme *sc, s7_pointer args) {
     s7_pointer obj, wrapped_buffer;
     s7_int obj_type;
     kinc_g4_index_buffer_t *ko;
-    int* buffer;
+    int *buffer;
 
     if (s7_list_length(sc, args) != 1)
         return(s7_wrong_number_of_args_error(sc, \"kinc_g4_index_buffer_lock takes 1 argument: ~S\", args));
@@ -160,6 +160,8 @@ static s7_pointer g_kinc_g4_set_index_buffer(s7_scheme *sc, s7_pointer args) {
       (C-function ("kinc_g4_set_index_buffer" g_kinc_g4_set_index_buffer "void kinc_g4_set_index_buffer (kinc_g4_index_buffer_t *buffer)" 1))
     )
   )
+
+  ;; TODO: Defines for make-g4-index-buffer, with-g4-index-buffer.
 
 (curlet))
 

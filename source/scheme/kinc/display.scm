@@ -32,7 +32,7 @@
       ;; Definitions and initialization for kinc_display_mode_t
       (in-C "
 
-//static int kinc_display_mode_t_s7tag = 0;
+//static int kinc_display_mode_t_s7tag = -1;
 
 //static s7_pointer kinc_display_mode_t__free(s7_scheme *sc, s7_pointer obj) {
 //    free(s7_c_object_value(obj));

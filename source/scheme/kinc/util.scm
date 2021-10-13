@@ -147,14 +147,14 @@
              (type-names (map (lambda (p) (cadr p)) type-fields))
 
              ; Declarations and functions
-             (type-tag-decl (string-append "static int " type-tag-str " = 0;\n"))
+             (type-tag-decl (string-append "static int " type-tag-str " = -1;\n"))
 
              ; FIXME: This needs to free member fields as well depending on type. I.e. kinc_type_t*, char*, etc.
              ; FIXME: Some types also have related destroy functions.
              (type-free-func
               (string-append "static s7_pointer " type-str "__free(s7_scheme *sc, s7_pointer obj) {\n"
                 (if type-destroyer
-                    (format #f "~A(s7_c_object_values(obj));\n" type-destroyer) "")
+                    (format #f "~5T~A(s7_c_object_value(obj));\n" type-destroyer) "")
                 "    free(s7_c_object_value(obj));\n"
                 "    return(NULL);\n"
                 "}\n"))
@@ -332,8 +332,18 @@
                 "}\n"))
 
              ; FIXME: Work in progress.
-             ;        - Make work with struct types, requires s7tag lookup (see system)
-             (type-make-func (if type-opaque? ""
+             ;        - Make work with member struct types, requires s7tag lookup (see system)
+             (type-make-func (if type-opaque?
+              ; opaque make:
+              (string-append "static s7_pointer g_" type-str "__make(s7_scheme *sc, s7_pointer args) {\n"
+                "    #define G_" type-str-cap "__MAKE_HELP \"(make-" type-str ") returns a new " type-str ".\"\n"
+                "\n"
+                "    " type-str " *ko = (" type-str " *)calloc(1, sizeof(" type-str "));\n"
+                "\n"
+                "    s7_pointer s7_ko = s7_make_c_object(sc, " type-tag-str ", (void *)ko);\n"
+                "    return(s7_ko);\n"
+               "}\n")
+              ; non-opaque make:
               (string-append "static s7_pointer g_" type-str "__make(s7_scheme *sc, s7_pointer args) {\n"
                 "    #define G_" type-str-cap "__MAKE_HELP \"(make-" type-str ") returns a new " type-str ".\"\n"
                 "    #define MAKE_" type-str-cap "__ARGLIST \"" (if type-opaque? "" (format #f "~{(~A ~A~A~A)~^ ~}" (map (lambda (tf) (values (cadr tf) (if (string? (caddr tf)) "\\\"" "") (caddr tf) (if (string? (caddr tf)) "\\\"" ""))) type-fields))) "\"\n"
@@ -355,11 +365,14 @@
                 "    return(s7_ko);\n"
                 "}\n")))
 
+             ;TODO: a make func for opaque types
+
              (type-config-func
               (string-append "static void configure_" type-str "(s7_scheme *sc) {\n"
                 "    " type-tag-str " = s7_make_c_type(sc, \"<" type-str ">\");\n"
                 "    s7_define_variable_with_documentation(sc, \"<" type-str ">\", s7_make_integer(sc, " type-tag-str "), \"The internal type tag (an integer) for the " type-str " C type.\" );\n"
-                (if type-opaque? "" (string-append "    s7_define_safe_function_star(sc, \"make-" type-str "\", g_" type-str "__make, MAKE_" type-str-cap "__ARGLIST, G_" type-str-cap "__MAKE_HELP);\n"))
+                (if type-opaque?    (string-append "    s7_define_function(          sc, \"make-" type-str "\", g_" type-str "__make, 0, 0, false, G_" type-str-cap "__MAKE_HELP);\n")
+                                    (string-append "    s7_define_safe_function_star(sc, \"make-" type-str "\", g_" type-str "__make, MAKE_" type-str-cap "__ARGLIST, G_" type-str-cap "__MAKE_HELP);\n"))
                 "    s7_define_typed_function(sc,     \"" type-str "?\",     g_" type-str "__is, 1, 0, false, G_" type-str-cap "__IS_HELP, G_" type-str-cap "__IS_SIG);\n"
                 (if type-opaque? "" (string-append "    s7_define_typed_function(sc,     \"" type-str "-ref\",  g_" type-str "__ref, 2, 0, false, G_" type-str-cap "__REF_HELP, G_" type-str-cap "__REF_SIG);\n"))
                 (if type-opaque? "" (string-append "    s7_define_typed_function(sc,     \"" type-str "-set!\", g_" type-str "__set, 3, 0, false, G_" type-str-cap "__SET_HELP, G_" type-str-cap "__SET_SIG);\n"))
@@ -399,7 +412,7 @@
                                ,type-display-readably-func
                                ,type-to-string-func
                                ,type-is-func
-                               ,(if type-opaque? "" type-make-func)
+                               ,type-make-func
                                ,type-config-func))))
 
         ; Prepend the c-code to the ctypes-c list.

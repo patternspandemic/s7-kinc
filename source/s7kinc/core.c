@@ -214,6 +214,9 @@ void s7kinc_init(void) {
   make_hooks();
   set_callbacks();
 
+  /* Add some primitive c-types to s7. */
+  s7ctypes_configure_primitives(sc);
+
   /* Make available some general utility. */
   load_scm(sc, "util.scm");
 
