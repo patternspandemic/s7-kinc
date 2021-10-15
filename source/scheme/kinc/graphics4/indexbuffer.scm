@@ -1,4 +1,4 @@
-;;; TODO: indexbuffer.scm
+;;; indexbuffer.scm
 ;;;
 ;;; kinc/graphics4/indexbuffer.h
 
@@ -161,27 +161,20 @@ static s7_pointer g_kinc_g4_set_index_buffer(s7_scheme *sc, s7_pointer args) {
     )
   )
 
-  ;; TODO: Defines for make-g4-index-buffer, with-g4-index-buffer.
+  (define make-g4-index-buffer
+    (let ((+documentation+ "(make-g4-index-buffer count (format KINC_G4_INDEX_BUFFER_FORMAT_32BIT) (usage KINC_G4_USAGE_STATIC)): Returns an initialized <kinc_g4_index_buffer_t> with `count` indices, the specified integer `format` and `usage` hint."))
+      (lambda* (count (format KINC_G4_INDEX_BUFFER_FORMAT_32BIT) (usage 0 #|KINC_G4_USAGE_STATIC|#))
+        (let ((buffer (make-kinc_g4_index_buffer_t)))
+          (kinc_g4_index_buffer_init buffer count format usage)
+          buffer))))
+
+  (define with-g4-index-buffer
+    (let ((+documentation+ "(with-g4-index-buffer index-buffer body ...): A convenience macro which exposes the underlying array of `index-buffer` for modification under the name 'I', which is an applicable/settable <wrapped_int_array>. The name 'count' is also made available, specifying the number of indices."))
+      (macro (index-buffer . body)
+        `(with-let (sublet (curlet)
+                           :count (kinc_g4_index_buffer_count ,index-buffer)
+                           :I (kinc_g4_index_buffer_lock ,index-buffer))
+           ,@body
+           (kinc_g4_index_buffer_unlock ,index-buffer)))))
 
 (curlet))
-
-#|
-
-; Use a convenience proc,
-(make-g4-index-buffer 3 KINC_G4_INDEX_BUFFER_FORMAT_32BIT KINC_G4_USAGE_STATIC)
-; in place of
-(make-kinc_g4_index_buffer_t) ; &&
-(kinc_g4_index_buffer_init ibuffer 3 KINC_G4_INDEX_BUFFER_FORMAT_32BIT KINC_G4_USAGE_STATIC)
-
-
-; Similarly, a convenience macro (where I or B is the buffer, count available too?),
-(with-g4-index-buffer ibuffer
-  (set! I #i(0 1 2))
-;      or
-  (set! (I 0) 0)
-  (set! (I 1) 1)
-  (set! (I 2) 2))
-; in place of using kinc_g4_index_buffer_lock/unlock
-
-
-|#

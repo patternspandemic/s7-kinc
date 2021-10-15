@@ -21,6 +21,11 @@ static s7_pointer wrapped_int_array__ref(s7_scheme *sc, s7_pointer args) {
         return(s7_wrong_type_arg_error(sc, "wrapped_int_array__ref", 1, obj, "a <wrapped_int_array>"));
     array = (int *)s7_c_object_value(s7_car(args));
 
+    // TODO: Maybe test for non-indexed ref and return a list of the array values?
+    //       (I) -> #i(0 1 ... n)
+    //    if (s7_is_null(sc, s7_cdr(args))) /* this is for an (obj) test */
+    //        return( ... );
+
     arg = s7_cadr(args);
     if (!s7_is_integer(arg))
         return(s7_wrong_type_arg_error(sc, "wrapped_int_array__ref", 2, arg, "an integer"));
@@ -43,6 +48,11 @@ static s7_pointer wrapped_int_array__set(s7_scheme *sc, s7_pointer args) {
     if (obj_type != wrapped_int_array_s7tag)
         return(s7_wrong_type_arg_error(sc, "wrapped_int_array__set", 1, obj, "a <wrapped_int_array>"));
     array = (int *)s7_c_object_value(s7_car(args));
+
+    // TODO: Maybe test for non-indexed set and set array values from a list / vector?
+    //       (set! (I) #i(0 1 2))
+    //    if (s7_is_null(sc, s7_cdr(args))) /* this is for an (obj) test */
+    //        return( ... );
 
     arg = s7_cadr(args);
     if (!s7_is_integer(arg))

@@ -17,7 +17,7 @@ Work in Progress, not usable by others.
     - [ ] Developer shell environment vars
       + [ ] S7KINC_DEV_SHELL
       + [ ] S7KINC_DEV_ROOT
-  + [ ] main.scm and special defines, hooks, reqlet, etc.
+  + [ ] main.scm and special defines, hooks, reqlet, helper procs (i.e. with/make-g4-*-buffer), etc.
   + [ ] Examples
 
 *** Progress of Application
@@ -86,7 +86,7 @@ Work in Progress, not usable by others.
   + [-] graphics4
     - [ ] constantlocation
     - [-] graphics
-    - [ ] indexbuffer
+    - [X] indexbuffer
     - [ ] pipeline
     - [ ] rendertarget
     - [ ] shader
