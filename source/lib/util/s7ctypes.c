@@ -73,17 +73,95 @@ static s7_pointer wrapped_int_array__make(s7_scheme *sc, int *array) {
 }
 
 
+/* A wrapped float array c-typedef
+ * TODO: to_string, to_list, support return of references ala s7_make_c_pointer? */
+
+static s7_int wrapped_float_array_s7tag = -1;
+
+static s7_pointer wrapped_float_array__ref(s7_scheme *sc, s7_pointer args) {
+    s7_pointer obj, arg;
+    s7_int obj_type;
+    float *array;
+    int index;
+
+    if (s7_list_length(sc, args) != 2)
+        return(s7_wrong_number_of_args_error(sc, "wrapped_float_array__ref takes 2 arguments: ~S", args));
+
+    obj = s7_car(args);
+    obj_type = s7_c_object_type(obj);
+    if (obj_type != wrapped_float_array_s7tag)
+        return(s7_wrong_type_arg_error(sc, "wrapped_float_array__ref", 1, obj, "a <wrapped_float_array>"));
+    array = (float *)s7_c_object_value(s7_car(args));
+
+    // TODO: Maybe test for non-indexed ref and return a list of the array values?
+    //       (V) -> #r(0. 1. ... n)
+    //    if (s7_is_null(sc, s7_cdr(args))) /* this is for an (obj) test */
+    //        return( ... );
+
+    arg = s7_cadr(args);
+    if (!s7_is_integer(arg))
+        return(s7_wrong_type_arg_error(sc, "wrapped_float_array__ref", 2, arg, "an integer"));
+
+    index = (int)s7_integer(arg);
+    return(s7_make_real(sc, array[index]));
+}
+
+static s7_pointer wrapped_float_array__set(s7_scheme *sc, s7_pointer args) {
+    s7_pointer obj, arg;
+    s7_int obj_type;
+    float *array;
+    int index;
+    float new_float;
+
+    if (s7_list_length(sc, args) != 3)
+        return(s7_wrong_number_of_args_error(sc, "wrapped_float_array__set takes 3 arguments: ~S", args));
+
+    obj = s7_car(args);
+    obj_type = s7_c_object_type(obj);
+    if (obj_type != wrapped_float_array_s7tag)
+        return(s7_wrong_type_arg_error(sc, "wrapped_float_array__set", 1, obj, "a <wrapped_float_array>"));
+    array = (float *)s7_c_object_value(s7_car(args));
+
+    // TODO: Maybe test for non-indexed set and set array values from a list / vector?
+    //       (set! (V) #r(0. 1. 2.))
+    //    if (s7_is_null(sc, s7_cdr(args))) /* this is for an (obj) test */
+    //        return( ... );
+
+    arg = s7_cadr(args);
+    if (!s7_is_integer(arg))
+        return(s7_wrong_type_arg_error(sc, "wrapped_float_array__set", 2, arg, "an integer"));
+    index = (int)s7_integer(arg);
+
+    arg = s7_caddr(args);
+    if (!s7_is_real(arg))
+        return(s7_wrong_type_arg_error(sc, "wrapped_float_array__set", 3, arg, "a real"));
+    new_float = (float)s7_real(arg);
+
+    array[index] = new_float;
+    return(s7_cadr(args));
+}
+
+static s7_pointer wrapped_float_array__make(s7_scheme *sc, float *array) {
+    return(s7_make_c_object(sc, wrapped_float_array_s7tag, (void *)array));
+}
+
+
 /* Utility functions */
 
 void s7ctypes_configure_primitives(s7_scheme *sc) {
-    // NOTE: wrapped_int_array
-    //       There is no __free func as this type only wraps.
+    // wrapped_int_array
+    //  NOTE: There is no __free func as this type only wraps.
     wrapped_int_array_s7tag = s7_make_c_type(sc, "<wrapped_int_array>");
     s7_define_variable_with_documentation(sc, "<wrapped_int_array>", s7_make_integer(sc, wrapped_int_array_s7tag), "The internal type tag (an integer) for the wrapped_int_array C type.");
     s7_c_type_set_ref(sc, wrapped_int_array_s7tag, wrapped_int_array__ref);
     s7_c_type_set_set(sc, wrapped_int_array_s7tag, wrapped_int_array__set);
 
-    // TODO: wrapped_float_array
+    // wrapped_float_array
+    //  NOTE: There is no __free func as this type only wraps.
+    wrapped_float_array_s7tag = s7_make_c_type(sc, "<wrapped_float_array>");
+    s7_define_variable_with_documentation(sc, "<wrapped_float_array>", s7_make_integer(sc, wrapped_float_array_s7tag), "The internal type tag (an integer) for the wrapped_float_array C type.");
+    s7_c_type_set_ref(sc, wrapped_float_array_s7tag, wrapped_float_array__ref);
+    s7_c_type_set_set(sc, wrapped_float_array_s7tag, wrapped_float_array__set);
 }
 
 s7_int s7ctypes_name_to_s7tag(s7_scheme *sc, const char *name) {
@@ -112,4 +190,8 @@ s7_int s7ctypes_name_to_s7tag(s7_scheme *sc, const char *name) {
 
 s7_pointer s7ctypes_wrap_int_array(s7_scheme *sc, int *array) {
     return(wrapped_int_array__make(sc, array));
+}
+
+s7_pointer s7ctypes_wrap_float_array(s7_scheme *sc, float *array) {
+    return(wrapped_float_array__make(sc, array));
 }
