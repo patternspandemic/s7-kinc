@@ -161,8 +161,8 @@ static s7_pointer g_kinc_g4_set_index_buffer(s7_scheme *sc, s7_pointer args) {
     )
   )
 
-  (define make-g4-index-buffer
-    (let ((+documentation+ "(make-g4-index-buffer count (format KINC_G4_INDEX_BUFFER_FORMAT_32BIT) (usage KINC_G4_USAGE_STATIC)): Returns an initialized <kinc_g4_index_buffer_t> with `count` indices, the specified integer `format` and `usage` hint."))
+  (define new-g4-index-buffer
+    (let ((+documentation+ "(new-g4-index-buffer count (format KINC_G4_INDEX_BUFFER_FORMAT_32BIT) (usage KINC_G4_USAGE_STATIC)): Returns an initialized <kinc_g4_index_buffer_t> with `count` indices, the specified integer `format` and `usage` hint."))
       (lambda* (count (format KINC_G4_INDEX_BUFFER_FORMAT_32BIT) (usage 0 #|KINC_G4_USAGE_STATIC|#))
         (let ((buffer (make-kinc_g4_index_buffer_t)))
           (kinc_g4_index_buffer_init buffer count format usage)
