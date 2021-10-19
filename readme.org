@@ -84,7 +84,7 @@ Work in Progress, not usable by others.
   + [X] graphics1
   + [ ] graphics2
   + [-] graphics4
-    - [ ] constantlocation
+    - [X] constantlocation
     - [-] graphics
     - [X] indexbuffer
     - [ ] pipeline
@@ -93,9 +93,9 @@ Work in Progress, not usable by others.
     - [ ] texture
     - [ ] texturearray
     - [ ] textureunit
-    - [ ] usage
-    - [ ] vertexbuffer
-    - [ ] vertexstructure
+    - [X] usage
+    - [-] vertexbuffer
+    - [X] vertexstructure
   + [ ] graphics5
     - [ ] commandlist
     - [ ] compute

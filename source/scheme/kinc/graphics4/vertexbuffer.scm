@@ -208,7 +208,7 @@ static s7_pointer g_kinc_g4_set_vertex_buffer(s7_scheme *sc, s7_pointer args) {
           (kinc_g4_vertex_buffer_init buffer count structure usage instance-data-step-rate)
           buffer))))
 
-  ; TODO: Add selective lock/unlock?
+  ; TODO: Add selective lock/unlock? or separate convenience macro?
   (define with-g4-vertex-buffer
     (let ((+documentation+ "(with-g4-vertex-buffer vertex-buffer body ...): A convenience macro which exposes the underlying array of `vertex-buffer` for modification under the name 'V', which is an applicable/settable <wrapped_float_array>. The names 'count' and 'stride' are also made available, specifying the number of vertices and size of one vertex of the buffer in bytes respectively."))
       (macro (vertex-buffer . body)

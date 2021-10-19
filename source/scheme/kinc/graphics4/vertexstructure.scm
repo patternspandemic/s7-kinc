@@ -1,4 +1,4 @@
-;;; TODO: vertexstructure.scm
+;;; vertexstructure.scm
 ;;;
 ;;; kinc/graphics4/vertexstructure.h
 
@@ -11,10 +11,11 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/vertexstructure
-    :ctypes ((:name kinc_g4_vertex_element_t
-              :fields (
-               (char* name "pos")
-               ((enum kinc_g4_vertex_data_t) data 3))) ; KINC_G4_VERTEX_DATA_FLOAT3 = 3
+    :ctypes (; NOTE: kinc_g4_vertex_element_t excluded, as it's not used on its own (kinc_g4_vertex_structure_add is used to add elements).
+             ; ;(:name kinc_g4_vertex_element_t
+             ; :fields (
+             ;  (char* name "pos")
+             ;  ((enum kinc_g4_vertex_data_t) data 3))) ; KINC_G4_VERTEX_DATA_FLOAT3 = 3
 
              ; NOTE: elements field is left unexposed. Perhaps the type should be readonly/opaque, with other fields exposed via procs?
              (:name kinc_g4_vertex_structure_t
