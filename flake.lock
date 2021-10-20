@@ -99,19 +99,36 @@
         "kinc-shader-src": "kinc-shader-src",
         "kinc-src": "kinc-src",
         "kinc-texture-src": "kinc-texture-src",
+        "krafix-bin": "krafix-bin",
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1632157684,
-        "narHash": "sha256-4+IxsF9kJO2MrHdmguPu+YAOdXxSnh40CJ2UpsX2M88=",
+        "lastModified": 1634752126,
+        "narHash": "sha256-SUdm/TQ46EVVGBLOYUzT9Lq3CXOt1MlisxxZbSlQYuU=",
         "owner": "patternspandemic",
         "repo": "kode-flake",
-        "rev": "99a56ac3323f197bc10dbb1fe677e700fa930323",
+        "rev": "d9953ada6d113679f393230218e8c564adfa4c97",
         "type": "github"
       },
       "original": {
         "owner": "patternspandemic",
         "repo": "kode-flake",
+        "type": "github"
+      }
+    },
+    "krafix-bin": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1634430621,
+        "narHash": "sha256-dJrfvnaO5EO25/kcWSZK4LPKmyULmNRIr9Vbz2sv+dU=",
+        "owner": "Kode",
+        "repo": "krafix_bin",
+        "rev": "41bbbc71cf45f26d5b3dec112f4871b16a2e669b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kode",
+        "repo": "krafix_bin",
         "type": "github"
       }
     },

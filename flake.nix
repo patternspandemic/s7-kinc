@@ -39,7 +39,7 @@
           packages = flake-utils.lib.flattenTree { s7kinc = pkgs.s7kinc; s7kincDevelop = pkgs.s7kincDevelop; };
 
           devShell = pkgs.mkShell {
-            buildInputs = with pkgs; [ s7kincDevelop s7 kode.libKinc ];
+            buildInputs = with pkgs; [ s7kincDevelop s7 kode.libKinc kode.krafix ];
             #inputsFrom = builtins.attrValues self.packages.${system};
             S7KINC_DEV_SHELL = "1";
             S7KINC_DEV_ROOT = "/home/pattern/repos/s7-kinc";
