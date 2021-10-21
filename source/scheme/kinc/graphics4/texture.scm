@@ -13,7 +13,13 @@
   (bind-kinc graphics4/texture
     :headers ("kinc/image.h")
     :ctypes ((:name kinc_g4_texture_t :destroy kinc_g4_texture_destroy
-              :fields (#|TODO|#)))
+              :fields (
+               (int tex_width 0)
+               (int tex_height 0)
+               (int tex_depth 0)
+               ((enum kinc_image_format_t) format 0) ; KINC_IMAGE_FORMAT_RGBA32 = 0
+               ;(kinc_g4_texture_impl_t impl) ; not needed
+               )))
 
     :c-info (
 

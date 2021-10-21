@@ -64,6 +64,8 @@
          ((bool) 's7_make_boolean)
          ((char*) 's7_make_string)
          (((struct #<>)) 's7_make_c_object) ; TODO: Will also need to lookup the s7tag at runtime (see system)
+                                        ; NOTE: Maybe refs should just return a c-pointer, to avoid having to ref count/avoid calling any extra destructor funcs when
+                                        ; more than one scheme side c obj hold c* to the same underlying Kinc obj. So same as void* below.
          ((void*) 's7_make_c_pointer)
          ; TODO: Function pointers possible?
          (else 'make_function_not_supported))) ; TODO: Error instead? (rather than in C)

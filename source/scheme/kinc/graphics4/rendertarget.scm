@@ -12,7 +12,16 @@
 
   (bind-kinc graphics4/rendertarget
     :ctypes ((:name kinc_g4_render_target_t :destroy kinc_g4_render_target_destroy
-              :fields (#|TODO|#)))
+              :fields (
+               (int width 0)
+               (int height 0)
+               (int texWidth 0)
+               (int texHeight 0)
+               (int contextId 0)
+               (bool isCubeMap #f)
+               (bool isDepthAttachment #f)
+               ;(kinc_g4_render_target_impl_t impl) ; not needed
+               )))
 
     :c-info (
       ((kinc_g4_render_target_format_t int) (KINC_G4_RENDER_TARGET_FORMAT_32BIT

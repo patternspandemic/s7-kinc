@@ -92,7 +92,7 @@ Work in Progress, not usable by others.
     - [ ] shader
     - [ ] texture
     - [ ] texturearray
-    - [ ] textureunit
+    - [X] textureunit
     - [X] usage
     - [-] vertexbuffer
     - [X] vertexstructure

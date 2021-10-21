@@ -12,7 +12,38 @@
 
   (bind-kinc graphics4/pipeline
     :ctypes ((:name kinc_g4_pipeline_t :destroy kinc_g4_pipeline_destroy
-              :fields (#|TODO|#)))
+              :fields (
+               ;((struct kinc_g4_vertex_structure_t*) input_layout [16]) ; FIXME
+               ((struct kinc_g4_shader_t*) vertex_shader (c-pointer 0)) ; FIXME
+               ((struct kinc_g4_shader_t*) fragment_shader (c-pointer 0)) ; FIXME
+               ((struct kinc_g4_shader_t*) geometry_shader (c-pointer 0)) ; FIXME
+               ((struct kinc_g4_shader_t*) tessellation_control_shader (c-pointer 0)) ; FIXME
+               ((struct kinc_g4_shader_t*) tessellation_evaluation_shader (c-pointer 0)) ; FIXME
+               ((enum kinc_g4_cull_mode_t) cull_mode 2) ; KINC_G4_CULL_NOTHING = 2
+               (bool depth_write #f)
+               ((enum kinc_g4_compare_mode_t) depth_mode 0) ; KINC_G4_COMPARE_ALWAYS = 0
+               ((enum kinc_g4_compare_mode_t) stencil_mode 0) ; KINC_G4_COMPARE_ALWAYS = 0
+               ((enum kinc_g4_stencil_action_t) stencil_both_pass 0) ; KINC_G4_STENCIL_KEEP = 0
+               ((enum kinc_g4_stencil_action_t) stencil_depth_fail 0) ; KINC_G4_STENCIL_KEEP = 0
+               ((enum kinc_g4_stencil_action_t) stencil_fail 0) ; KINC_G4_STENCIL_KEEP = 0
+               (int stencil_reference_value 0)
+               (int stencil_read_mask #xff)
+               (int stencil_write_mask #xff)
+               ((enum kinc_g4_blending_operation_t) blend_source 0) ; KINC_G4_BLEND_ONE = 0
+               ((enum kinc_g4_blending_operation_t) blend_destination 1) ;KINC_G4_BLEND_ZERO = 1
+               ((enum kinc_g4_blending_operation_t) alpha_blend_source 0) ; KINC_G4_BLEND_ONE = 0
+               ((enum kinc_g4_blending_operation_t) alpha_blend_destination 1) ; KINC_G4_BLEND_ZERO = 1
+               (bool color_write_mask_red [8]) ; FIXME
+               (bool color_write_mask_green [8]) ; FIXME
+               (bool color_write_mask_blue [8]) ; FIXME
+               (bool color_write_mask_alpha [8]) ; FIXME
+               (int color_attachment_count 1)
+               ((enum kinc_g4_render_target_format_t) color_attachment [8]) ; FIXME
+               (int depth_attachment_bits 0)
+               (int stencil_attachment_bits 0)
+               (bool conservative_rasterization #f)
+               ;(kinc_g4_pipeline_impl_t impl) ; not neede
+               )))
 
     :c-info (
       ((kinc_g4_blending_operation_t int) (KINC_G4_BLEND_ONE
