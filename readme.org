@@ -87,9 +87,9 @@ Work in Progress, not usable by others.
     - [X] constantlocation
     - [-] graphics
     - [X] indexbuffer
-    - [ ] pipeline
+    - [-] pipeline
     - [ ] rendertarget
-    - [ ] shader
+    - [X] shader
     - [ ] texture
     - [ ] texturearray
     - [X] textureunit

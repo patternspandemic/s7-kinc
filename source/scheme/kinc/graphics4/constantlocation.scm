@@ -1,3 +1,4 @@
+; TODO: Remove
 ;;; constantlocation.scm
 ;;;
 ;;; kinc/graphics4/constantlocation.h

@@ -11,7 +11,14 @@
 (with-let (unlet)
 
   (bind-kinc graphics4/pipeline
-    :ctypes ((:name kinc_g4_pipeline_t :destroy kinc_g4_pipeline_destroy
+    :headers ("kinc/graphics4/constantlocation.h"
+              "kinc/graphics4/textureunit.h")
+
+    :ctypes ((:name kinc_g4_constant_location_t)
+
+             (:name kinc_g4_texture_unit_t)
+
+             (:name kinc_g4_pipeline_t :destroy kinc_g4_pipeline_destroy
               :fields (
                ;((struct kinc_g4_vertex_structure_t*) input_layout [16]) ; FIXME
                ((struct kinc_g4_shader_t*) vertex_shader (c-pointer 0)) ; FIXME
@@ -79,53 +86,130 @@
                                        KINC_G4_STENCIL_DECREMENT_WRAP
                                        KINC_G4_STENCIL_INVERT))
 
-      ;; TODO: Functions requiring special C-object conversion
+      ;; Functions requiring special C-object conversion
       (in-C "
 
 static s7_pointer g_kinc_g4_pipeline_init(s7_scheme *sc, s7_pointer args) {
-// void kinc_g4_pipeline_init (kinc_g4_pipeline_t *pipeline)
+    s7_pointer obj;
+    s7_int obj_type;
+    kinc_g4_pipeline_t *ko;
 
+    if (s7_list_length(sc, args) != 1)
+        return(s7_wrong_number_of_args_error(sc, \"kinc_g4_pipeline_init takes 1 argument: ~S\", args));
+
+    obj = s7_car(args);
+    obj_type = s7_c_object_type(obj);
+    if (obj_type != kinc_g4_pipeline_t_s7tag)
+        return(s7_wrong_type_arg_error(sc, \"kinc_g4_pipeline_init\", 0, obj, \"a kinc_g4_pipeline_t\"));
+    ko = (kinc_g4_pipeline_t *)s7_c_object_value(obj);
+
+    kinc_g4_pipeline_init(ko);
+    return(s7_unspecified(sc));
 }
 
+/* kinc_g4_pipeline_destroy is called directly from the opaque ctype's free proc.
 static s7_pointer g_kinc_g4_pipeline_destroy(s7_scheme *sc, s7_pointer args) {
-// void kinc_g4_pipeline_destroy (kinc_g4_pipeline_t *pipeline)
+    s7_pointer obj;
+    s7_int obj_type;
+    kinc_g4_pipeline_t *ko;
 
+    if (s7_list_length(sc, args) != 1)
+        return(s7_wrong_number_of_args_error(sc, \"kinc_g4_pipeline_destroy takes 1 argument: ~S\", args));
+
+    obj = s7_car(args);
+    obj_type = s7_c_object_type(obj);
+    if (obj_type != kinc_g4_pipeline_t_s7tag)
+        return(s7_wrong_type_arg_error(sc, \"kinc_g4_pipeline_destroy\", 0, obj, \"a kinc_g4_pipeline_t\"));
+    ko = (kinc_g4_pipeline_t *)s7_c_object_value(obj);
+
+    kinc_g4_pipeline_destroy(ko);
+    return(s7_unspecified(sc));
 }
+*/
 
 static s7_pointer g_kinc_g4_pipeline_compile(s7_scheme *sc, s7_pointer args) {
-// void kinc_g4_pipeline_compile (kinc_g4_pipeline_t *pipeline)
+    s7_pointer obj;
+    s7_int obj_type;
+    kinc_g4_pipeline_t *ko;
 
+    if (s7_list_length(sc, args) != 1)
+        return(s7_wrong_number_of_args_error(sc, \"kinc_g4_pipeline_compile takes 1 argument: ~S\", args));
+
+    obj = s7_car(args);
+    obj_type = s7_c_object_type(obj);
+    if (obj_type != kinc_g4_pipeline_t_s7tag)
+        return(s7_wrong_type_arg_error(sc, \"kinc_g4_pipeline_compile\", 0, obj, \"a kinc_g4_pipeline_t\"));
+    ko = (kinc_g4_pipeline_t *)s7_c_object_value(obj);
+
+    kinc_g4_pipeline_compile(ko);
+    return(s7_unspecified(sc));
 }
 
 static s7_pointer g_kinc_g4_pipeline_get_constant_location(s7_scheme *sc, s7_pointer args) {
-// kinc_g4_constant_location_t kinc_g4_pipeline_get_constant_location (kinc_g4_pipeline_t *pipeline, const char *name)
+    s7_pointer obj, p, arg;
+    s7_int obj_type;
+    char *name;
+    kinc_g4_pipeline_t *pipeline_ko;
+    kinc_g4_constant_location_t *constant_location_ko, constant_location_val;
 
+    if (s7_list_length(sc, args) != 2)
+        return(s7_wrong_number_of_args_error(sc, \"kinc_g4_pipeline_get_constant_location takes 2 arguments: ~S\", args));
+
+    p = args;
+    obj = s7_car(p);
+    obj_type = s7_c_object_type(obj);
+    if (obj_type != kinc_g4_pipeline_t_s7tag)
+        return(s7_wrong_type_arg_error(sc, \"kinc_g4_pipeline_get_constant_location\", 1, obj, \"a kinc_g4_pipeline_t\"));
+    pipeline_ko = (kinc_g4_pipeline_t *)s7_c_object_value(obj);
+
+    p = s7_cdr(p);
+    arg = s7_car(p);
+    if (!s7_is_string(arg))
+        return(s7_wrong_type_arg_error(sc, \"kinc_g4_pipeline_get_constant_location\", 2, arg, \"a string\"));
+    name = (char *)s7_string(arg);
+
+    constant_location_val = kinc_g4_pipeline_get_constant_location(pipeline_ko, name);
+    constant_location_ko = (kinc_g4_constant_location_t *)calloc(1, sizeof(kinc_g4_constant_location_t));
+    constant_locaiton_ko->impl = constant_location_val.impl;
+    return(s7_make_c_object(sc, kinc_g4_constant_location_t_s7tag, (void *)constant_location_ko));
 }
 
 static s7_pointer g_kinc_g4_pipeline_get_texture_unit(s7_scheme *sc, s7_pointer args) {
-// kinc_g4_texture_unit_t kinc_g4_pipeline_get_texture_unit (kinc_g4_pipeline_t *pipeline, const char *name)
+    s7_pointer obj, p, arg;
+    s7_int obj_type;
+    char *name;
+    kinc_g4_pipeline_t *pipeline_ko;
+    kinc_g4_texture_unit_t *texture_unit_ko, texture_unit_val;
 
-}
+    if (s7_list_length(sc, args) != 2)
+        return(s7_wrong_number_of_args_error(sc, \"kinc_g4_pipeline_get_texture_unit takes 2 arguments: ~S\", args));
 
-static s7_pointer g_kinc_g4_internal_set_pipeline(s7_scheme *sc, s7_pointer args) {
-// void kinc_g4_internal_set_pipeline (kinc_g4_pipeline_t *pipeline)
+    p = args;
+    obj = s7_car(p);
+    obj_type = s7_c_object_type(obj);
+    if (obj_type != kinc_g4_pipeline_t_s7tag)
+        return(s7_wrong_type_arg_error(sc, \"kinc_g4_pipeline_get_texture_unit\", 1, obj, \"a kinc_g4_pipeline_t\"));
+    pipeline_ko = (kinc_g4_pipeline_t *)s7_c_object_value(obj);
 
-}
+    p = s7_cdr(p);
+    arg = s7_car(p);
+    if (!s7_is_string(arg))
+        return(s7_wrong_type_arg_error(sc, \"kinc_g4_pipeline_get_texture_unit\", 2, arg, \"a string\"));
+    name = (char *)s7_string(arg);
 
-static s7_pointer g_kinc_g4_internal_pipeline_set_defaults(s7_scheme *sc, s7_pointer args) {
-// void kinc_g4_internal_pipeline_set_defaults (kinc_g4_pipeline_t *pipeline)
-
+    texture_unit_val = kinc_g4_pipeline_get_texture_unit(pipeline_ko, name);
+    texture_unit_ko = (kinc_g4_texture_unit_t *)calloc(1, sizeof(kinc_g4_texture_unit_t));
+    texture_unit_ko->impl = texture_unit_val.impl;
+    return(s7_make_c_object(sc, kinc_g4_texture_unit_t_s7tag, (void *)texture_unit_ko));
 }
 
 ") ;; end special C-object conversion
 
       (C-function ("kinc_g4_pipeline_init" g_kinc_g4_pipeline_init "void kinc_g4_pipeline_init (kinc_g4_pipeline_t *pipeline)" 1))
-      (C-function ("kinc_g4_pipeline_destroy" g_kinc_g4_pipeline_destroy "void kinc_g4_pipeline_destroy (kinc_g4_pipeline_t *pipeline)" 1))
+      ;(C-function ("kinc_g4_pipeline_destroy" g_kinc_g4_pipeline_destroy "void kinc_g4_pipeline_destroy (kinc_g4_pipeline_t *pipeline)" 1)) ; automatically called
       (C-function ("kinc_g4_pipeline_compile" g_kinc_g4_pipeline_compile "void kinc_g4_pipeline_compile (kinc_g4_pipeline_t *pipeline)" 1))
       (C-function ("kinc_g4_pipeline_get_constant_location" g_kinc_g4_pipeline_get_constant_location "kinc_g4_constant_location_t kinc_g4_pipeline_get_constant_location (kinc_g4_pipeline_t *pipeline, const char *name)" 2))
       (C-function ("kinc_g4_pipeline_get_texture_unit" g_kinc_g4_pipeline_get_texture_unit "kinc_g4_texture_unit_t kinc_g4_pipeline_get_texture_unit (kinc_g4_pipeline_t *pipeline, const char *name)" 2))
-      (C-function ("kinc_g4_internal_set_pipeline" g_kinc_g4_internal_set_pipeline "void kinc_g4_internal_set_pipeline (kinc_g4_pipeline_t *pipeline)" 1))
-      (C-function ("kinc_g4_internal_pipeline_set_defaults" g_kinc_g4_internal_pipeline_set_defaults "void kinc_g4_internal_pipeline_set_defaults (kinc_g4_pipeline_t *pipeline)" 1))
     )
   )
 
