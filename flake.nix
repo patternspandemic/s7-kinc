@@ -2,7 +2,7 @@
   description = "Kinc and s7 Scheme bound together.";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-21.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-21.11";
     flake-utils.url = "github:numtide/flake-utils";
     s7-flk.url = "github:patternspandemic/s7-flake";
 
